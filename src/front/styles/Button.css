@@ -1,0 +1,84 @@
+/* --- Reusable RISE Button Component --- */
+.rise-btn {
+  /* Basic appearance reset and setup */
+  appearance: none; 
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  
+  /* Styling */
+  border-radius: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: #fff; 
+  background: var(--orange); 
+  box-shadow: 0 10px 24px rgba(255, 106, 0, .35); /* Orange shadow */
+  
+  /* Layout */
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; 
+
+  /* Animation/Interaction */
+  transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+/* Disabled State */
+.rise-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none; 
+}
+
+/* --- Variants --- */
+.rise-btn--primary {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+  color: white; /* Asegúrate que el texto es blanco */
+}
+
+/* Modificación para el botón "YA SOY UN FÉNIX" */
+.rise-btn--secondary-outline {
+  /* Ahora tendrá un fondo, pero más sutil */
+  background-color: var(--rise-light-purple) !important; /* O un gris oscuro suave */
+  border: 2px solid var(--rise-light-purple) !important; /* Borde del mismo color */
+  color: var(--rise-text-light) !important; /* Texto claro */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra más sutil */
+}
+.rise-btn--secondary-outline:hover {
+  background-color: var(--orange-2) !important; /* Un poco de naranja al pasar el mouse */
+  border-color: var(--orange-2) !important;
+  color: white !important;
+  box-shadow: 0 8px 20px rgba(255, 106, 0, 0.2);
+  transform: translateY(-1px); /* Menos movimiento que el primario */
+}
+.rise-btn--secondary-outline:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Sizes --- */
+.rise-btn--md { 
+  padding: .9rem 1.4rem; 
+  font-size: 1rem; 
+}
+.rise-btn--lg { 
+  padding: 1rem 2rem; 
+  font-size: 1.05rem; 
+}
+
+/* --- Block Level --- */
+.rise-btn--block { 
+  width: 100%; 
+  max-width: 360px; 
+}
+
+/* --- Interaction Effects --- */
+.rise-btn:hover:not(:disabled) { 
+  transform: translateY(-2px); 
+  box-shadow: 0 12px 25px rgba(255, 106, 0, 0.45); 
+}
+.rise-btn:active:not(:disabled) { 
+  transform: translateY(0); 
+  box-shadow: 0 8px 18px rgba(255, 106, 0, .30); 
+}

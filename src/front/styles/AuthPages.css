@@ -1,0 +1,83 @@
+/* src/front/styles/LoginPage.css OR AuthPage.css */
+
+.auth-page-container {
+    background-color: var(--rise-dark-purple);
+    color: var(--rise-text-light);
+}
+
+.auth-logo {
+    max-width: 200px;
+    margin-bottom: 1rem;
+}
+
+.auth-slogan {
+    color: var(--rise-gray-text); /* Muted color on dark background */
+}
+
+.auth-card {
+    background-color: var(--rise-light-purple) !important; /* Slightly lighter purple */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.auth-card .card-title {
+    color: var(--rise-text-light);
+}
+
+.auth-card .form-label {
+    color: var(--rise-gray-text) !important;
+}
+
+/* Custom Input Styles for Dark Background */
+.custom-input {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: var(--rise-text-light) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 10px;
+}
+.custom-input::placeholder {
+    color: var(--rise-gray-text) !important;
+    opacity: 0.6; /* Keep it slightly faded */
+}
+.custom-input:focus {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 106, 0, 0.25) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important; /* Slightly darker on focus */
+}
+
+/* Link Style for switching between Login/Register */
+.btn-link-rise {
+  color: var(--orange-2) !important; /* Use the lighter orange */
+  text-decoration: none !important;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+.btn-link-rise:hover {
+  color: var(--orange) !important;
+  text-decoration: underline !important;
+}
+
+/* Footer Items on Auth Pages */
+.auth-footer {
+    width: 100%;
+    position: absolute; /* Fixed at the bottom */
+    bottom: 0;
+    left: 0;
+    padding: 1rem 0;
+}
+.auth-footer-item-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    color: var(--rise-gray-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.auth-footer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
