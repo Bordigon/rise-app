@@ -1,0 +1,227 @@
+
+.stage {
+  width: 100%; /* Ocupa el ancho disponible dentro de .main-content */
+  max-width: var(--content-max-w); /* Limita el ancho máximo (variable global) */
+  margin: 0 auto; /* Centra el contenido horizontalmente */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra los elementos hijos horizontalmente */
+  justify-content: space-around; /* Distribuye el espacio verticalmente */
+  flex-grow: 1; /* Ocupa el espacio vertical disponible */
+  padding: 24px 16px; /* Padding interno */
+  /* Ajuste para evitar que el contenido se solape con ExpBar fijo */
+  padding-bottom: calc(var(--expbar-h) + 40px);
+}
+
+/* --- Fénix Central --- */
+.phoenix-central-container {
+  margin-top: 1rem; /* Espacio superior */
+  margin-bottom: 1rem; /* Espacio inferior */
+}
+
+.phoenix-main-image {
+  width: 150px; /* Tamaño del Fénix */
+  height: auto;
+  filter: drop-shadow(0 0 15px rgba(255, 200, 0, 0.7));
+  animation: phoenix-breath 3.5s infinite alternate ease-in-out;
+}
+
+@keyframes phoenix-breath {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.03) translateY(-5px); }
+}
+
+/* --- Mensaje de Racha y Tareas Pendientes --- */
+.dashboard-message { /* Contenedor para los mensajes */
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-message .lead { /* "¡Llevas X días..." */
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--rise-text-light); /* Asegura texto claro */
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-message .text-muted { /* "Te quedan X tareas..." */
+  color: var(--rise-gray-text) !important; /* Color grisáceo */
+}
+
+.text-rise-orange { /* Para resaltar números o texto importante */
+  color: var(--orange) !important;
+  font-weight: 700;
+}
+
+/* --- Vista Semanal del Streak (Grid con Flechas y Huevos) --- */
+.week-strip-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* Columna para flecha izq, huevos, flecha der */
+  align-items: center; /* Centra verticalmente flechas y huevos */
+  gap: 12px;
+  width: 100%;
+  max-width: var(--content-max-w);
+  margin: 1rem auto; /* Margen vertical */
+}
+
+/* Contenedor de los huevos */
+.week-days-wrapper {
+  display: flex;
+  justify-content: space-around; /* Distribuye los huevos */
+  align-items: flex-end; /* Alinea huevos en la base */
+  gap: 0.5rem; /* Espacio mínimo entre huevos */
+}
+
+/* Contenedor de cada día (huevo + letra + fecha) */
+.day-item {
+  width: 100px;
+  min-height: 140px; /* Altura base para acomodar la letra arriba */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+}
+.day-item:hover {
+  transform: translateY(-5px);
+}
+
+/* Imagen del huevo */
+.day-egg-image {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  position: absolute;
+  bottom: 20px; /* Deja espacio para la fecha abajo */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  transition: filter 0.3s ease;
+}
+
+.day-egg-image.open {
+  filter: drop-shadow(0 0 12px rgba(255, 103, 0, 0.7));
+}
+
+/* Letra del día (encima del huevo) */
+.day-letter {
+  position: absolute;
+  top: 0; /* Arriba del contenedor del día */
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--rise-text-light);
+  z-index: 4;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+.day-letter.text-rise-orange {
+  color: var(--orange) !important;
+}
+
+/* Fecha debajo del huevo */
+.day-date {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.75rem;
+  color: var(--rise-gray-light) !important;
+  white-space: nowrap;
+}
+
+/* Indicador de "HOY" */
+.today-indicator {
+  font-size: 0.7rem;
+  color: var(--rise-dark-purple);
+  background-color: var(--orange);
+  padding: 2px 6px;
+  border-radius: 8px;
+  position: absolute;
+  top: -20px; /* Encima de la letra del día */
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 122, 0, 0.6);
+}
+
+/* --- Flechas de Navegación Semanal --- */
+.week-arrow {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  color: #ff9444;
+  font-size: 48px; /* Más pequeñas que antes */
+  font-weight: 900;
+  line-height: 1;
+  padding: 6px 10px;
+  text-shadow:
+    0 0 4px rgba(255, 138, 47, 0.25),
+    0 0 8px rgba(255, 0, 210, 0.15);
+  transition: transform 120ms ease, text-shadow 200ms ease, color 200ms ease;
+}
+.week-arrow:hover {
+  transform: scale(1.08);
+  color: #ffaa66;
+  text-shadow:
+    0 0 6px rgba(255, 138, 47, 0.35),
+    0 0 12px rgba(255, 0, 210, 0.25);
+}
+.week-arrow:active {
+  transform: scale(0.94);
+  color: var(--orange);
+}
+.week-arrow:focus-visible { outline: none; }
+
+/* --- Botón "Daily Tasks" (CTA) --- */
+.cta-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2rem; /* Espacio sobre el botón */
+  margin-bottom: 2rem; /* Espacio bajo el botón */
+}
+
+/* Los estilos base .rise-btn y .rise-btn--lg ya están en index.css */
+.daily-tasks-button {
+  width: auto; /* No necesita ser full width */
+  max-width: 300px;
+  padding: 1rem 2.5rem; /* Ajusta padding si es necesario */
+  font-size: 1.1rem; /* Ajusta tamaño de fuente */
+}
+
+/* --- Frase Motivacional --- */
+.motivational-quote-wrapper {
+  width: 100%;
+  max-width: 600px; /* Limita el ancho de la frase */
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto; /* Empuja la frase hacia abajo */
+  color: var(--rise-gray-text);
+}
+.motivational-quote-wrapper .quote-text {
+  font-style: italic;
+  color: var(--rise-text-light);
+  font-size: 1rem;
+  display: block; /* Asegura que esté en su propia línea */
+  margin-bottom: 0.25rem;
+}
+.motivational-quote-wrapper .quote-author {
+  font-size: 0.85rem;
+}
+
+
+/* --- Ajustes para pantallas altas (opcional) --- */
+@media (min-height: 900px) {
+  .stage {
+    justify-content: center; /* Centra verticalmente todo el contenido */
+  }
+  .cta-wrap {
+    position: static;
+    margin-top: 2rem; /* Ajusta el margen si es necesario */
+  }
+  .motivational-quote-wrapper {
+     margin-top: 2rem; /* Más espacio arriba en pantallas altas */
+  }
+}

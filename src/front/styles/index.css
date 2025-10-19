@@ -1,5 +1,3 @@
-/* src/front/styles/index.css */
-
 /* --- 1. Importaciones Globales --- */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@300;400;600&display=swap');
 /* Import Bootstrap Icons CSS if installed via npm */
@@ -29,12 +27,24 @@
 
 /* --- 3. Estilos Base Globales --- */
 body {
-  /* Default background/color might be overridden by specific pages */
-  background-color: var(--rise-light-bg);
+  /* This sets the DEFAULT background, might be overridden */
+  background-color: var(--rise-light-bg); /* Default light for landing */
   color: var(--rise-dark-text);
   font-family: 'Open Sans', sans-serif;
   min-height: 100vh;
 }
+
+.app-layout {
+  display: flex;
+}
+
+.main-full-width {
+  flex-grow: 1;
+  min-height: 100vh; /* Ensure it takes full height */
+  /* Landing page might override background, ensure this doesn't conflict */
+}
+
+
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
@@ -53,6 +63,22 @@ main {
  flex-direction: column;
 }
 
+.main-with-sidebar {
+  flex-grow: 1;
+  margin-left: var(--sidebar-w); /* Space for sidebar */
+  padding: 2rem; /* Add padding */
+  padding-bottom: calc(var(--expbar-h) + 2rem); /* Space for ExpBar */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure it takes full height */
+  /* APPLY DARK BACKGROUND HERE */
+  background-color: var(--rise-dark-purple);
+  background-image:
+    radial-gradient(circle at 50% 10%, rgba(50, 10, 80, 0.3) 0%, transparent 70%),
+    linear-gradient(180deg, #1a0b1f 0%, #0d0714 100%);
+  background-repeat: no-repeat;
+  color: var(--rise-text-light); /* Ensure text is light */
+}
 
 /* --- 4. Componentes Globales Reutilizables (.rise-btn) --- */
 .rise-btn {
@@ -106,4 +132,10 @@ main {
 .rise-btn:active:not(:disabled) {
     transform: translateY(0);
     box-shadow: 0 8px 18px rgba(255, 106, 0, .30); /* Slightly less shadow when pressed */
+}
+
+@media (max-width: 880px) {
+  .main-with-sidebar {
+    margin-left: var(--sidebar-w-collapsed);
+  }
 }

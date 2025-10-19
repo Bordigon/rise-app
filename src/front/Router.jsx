@@ -4,16 +4,13 @@ import Layout from "./layout/Layout.jsx"; // Asegúrate que la ruta es correcta
 import LandingPage from "./pages/LandingPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-import useGlobalReducer from "./hooks/useGlobalReducer.jsx"; // Importa el hook
+import useGlobalReducer from "./hooks/useGlobalReducer.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
+import DashboardPage from "./pages/DashboardPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx"; 
+import LeaderboardPage from "./pages/LeaderboardPage.jsx";
 
-const PrivateRoute = ({ children }) => {
-    const { store } = useGlobalReducer();
-   
-    return store.token ? children : <Navigate to="/login" replace />;
-};
-
-// Renombramos la función a AppRouter (convención de React)
 export default function AppRouter() {
   return (
     <Routes>
@@ -23,8 +20,7 @@ export default function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Rutas Privadas (envueltas individualmente o en grupo) */}
-        {/* Aquí asumimos que Layout ya no necesita saber si está autenticado */}
+        {/* Rutas Privadas */}
         <Route
           path="/dashboard"
           element={<PrivateRoute><DashboardPage /></PrivateRoute>}
@@ -45,7 +41,3 @@ export default function AppRouter() {
   );
 }
 
-// Asegúrate de importar los componentes de las páginas privadas si los usas aquí
-import DashboardPage from "./pages/DashboardPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
-import LeaderboardPage from "./pages/LeaderboardPage.jsx";

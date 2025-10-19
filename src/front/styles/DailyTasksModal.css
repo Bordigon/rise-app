@@ -1,0 +1,190 @@
+/* --- Estilos para DailyTasksModal --- */
+
+.daily-tasks-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Asegura que esté por encima de todo */
+    backdrop-filter: blur(5px); /* Efecto de desenfoque al fondo */
+}
+
+.daily-tasks-modal-content {
+    background-color: var(--rise-dark-purple); /* Fondo morado oscuro */
+    border: 2px solid var(--rise-light-purple); /* Borde sutil */
+    border-radius: 20px; /* Bordes redondeados */
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 500px; /* Ancho máximo para el modal */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    animation: scaleIn 0.3s ease-out; /* Animación de aparición */
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(var(--rise-light-purple), 0.5); /* Separador sutil */
+    margin-bottom: 1.5rem;
+}
+
+.modal-title {
+    color: var(--rise-orange-primary); /* Título naranja */
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: var(--rise-gray-text);
+    font-size: 2.5rem; /* Botón de cerrar grande */
+    cursor: pointer;
+    padding: 0;
+    line-height: 1; /* Eliminar espacio extra */
+    transition: color 0.2s ease;
+}
+
+.close-button:hover {
+    color: var(--rise-orange-primary);
+}
+
+.modal-body {
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    max-height: 60vh; /* Limita la altura para scroll si hay muchas tareas */
+    overflow-y: auto; /* Permite scroll vertical */
+    padding-right: 10px; /* Espacio para la barra de scroll */
+}
+
+.tasks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(var(--rise-light-purple), 0.1); /* Fondo muy suave para cada tarea */
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+    transition: background-color 0.2s ease, opacity 0.3s ease; /* Añade transición para opacity */
+}
+
+.task-item.completed {
+    background-color: rgba(var(--rise-orange-primary), 0.08); /* Fondo diferente para completadas */
+    opacity: 0.8; /* Ligeramente atenuada */
+}
+
+.task-name {
+    color: var(--rise-text-light);
+    font-size: 1.1rem;
+    flex-grow: 1; /* Permite que el nombre ocupe el espacio */
+    margin-right: 1rem; /* Espacio antes del botón */
+    line-height: 1.3;
+}
+
+.toggle-task-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.8rem; /* Icono de check grande */
+    color: var(--rise-gray-text); /* Color por defecto */
+    transition: color 0.2s ease;
+}
+
+.toggle-task-button:hover {
+    color: var(--rise-orange-primary); /* Naranja al hover */
+}
+
+.toggle-task-button.completed {
+    color: var(--rise-orange-primary); /* Color naranja si está completada */
+}
+
+/* Añade un brillo sutil al icono */
+.toggle-task-button i {
+    filter: drop-shadow(0 0 5px rgba(255, 103, 0, 0.3));
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--rise-light-purple), 0.5); /* Separador */
+    margin-top: 1.5rem;
+}
+
+.modal-footer .btn { /* Asegura que el botón se vea bien en el footer */
+    min-width: 120px;
+}
+
+.add-task-section {
+    display: flex;
+    gap: 10px; /* Espacio entre el input y el botón */
+    margin-top: 1.5rem; /* Margen superior para separarlo de la lista */
+    padding-top: 1rem;
+    border-top: 1px solid rgba(var(--rise-light-purple), 0.3); /* Separador sutil */
+}
+
+.add-task-input {
+    flex-grow: 1; /* Permite que el input ocupe el espacio disponible */
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--rise-light-purple);
+    border-radius: 10px;
+    background-color: rgba(var(--rise-light-purple), 0.15); /* Fondo ligeramente más oscuro que los items */
+    color: var(--rise-text-light);
+    font-size: 1rem;
+    outline: none; /* Quita el contorno por defecto al enfocar */
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.add-task-input::placeholder {
+    color: var(--rise-gray-text);
+    opacity: 0.7;
+}
+
+.add-task-input:focus {
+    border-color: var(--rise-orange-primary); /* Borde naranja al enfocar */
+    background-color: rgba(var(--rise-orange-primary), 0.08); /* Fondo ligeramente naranja al enfocar */
+}
+
+.add-task-button {
+    background: linear-gradient(135deg, var(--rise-orange-primary) 0%, #ff6f00 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el icono y el texto */
+    box-shadow: 0 4px 15px rgba(255, 103, 0, 0.4);
+    transition: all 0.2s ease;
+}
+
+.add-task-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 103, 0, 0.6);
+}
+
+.add-task-button i {
+    font-size: 1.2rem; /* Tamaño del icono de añadir */
+}
