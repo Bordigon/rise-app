@@ -1,29 +1,26 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'  // Global styles for your application
-import { RouterProvider } from "react-router-dom";  // Import RouterProvider to use the router
-import { router } from "./routes";  // Import the router configuration
-import { StoreProvider } from './hooks/useGlobalReducer';  // Import the StoreProvider for global state management
-import { BackendURL } from './components/BackendURL';
+// src/front/main.jsx (CORREGIDO)
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from "react-router-dom"; // <-- USA BrowserRouter
+import AppRouter from './Router.jsx'; // <-- IMPORTA TU COMPONENTE Router (ahora AppRouter)
+import { StoreProvider } from './hooks/useGlobalReducer.jsx';
 
-const Main = () => {
-    
-    if(! import.meta.env.VITE_BACKEND_URL ||  import.meta.env.VITE_BACKEND_URL == "") return (
-        <React.StrictMode>
-              <BackendURL/ >
-        </React.StrictMode>
-        );
+// Importa los estilos globales
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import "./styles/index.css"; 
+import "./styles/Button.css"; 
+
+const App = () => {
+    // Ya no necesitas la lógica de VITE_BACKEND_URL aquí si Router maneja todo
     return (
-        <React.StrictMode>  
-            {/* Provide global state to all components */}
-            <StoreProvider> 
-                {/* Set up routing for the application */} 
-                <RouterProvider router={router}>
-                </RouterProvider>
+        <React.StrictMode>
+            <StoreProvider>
+                <BrowserRouter> {/* <-- USA BrowserRouter aquí */}
+                    <AppRouter /> {/* <-- Renderiza tu componente de rutas */}
+                </BrowserRouter>
             </StoreProvider>
         </React.StrictMode>
     );
 }
 
-// Render the Main component into the root DOM element.
-ReactDOM.createRoot(document.getElementById('root')).render(<Main />)
+ReactDOM.createRoot(document.getElementById('root')).render(<App />); // Llama a render con App

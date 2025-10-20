@@ -1,0 +1,66 @@
+/* src/front/styles/LandingPage.css */
+
+/* --- Container for the Landing Page --- */
+.landing-page-container {
+    /* Uses the light background defined in index.css */
+    background-color: var(--rise-light-bg);
+    color: var(--rise-dark-text); /* Dark text for light background */
+    display: flex; /* Ensures flexbox properties work */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem; /* Add some padding */
+}
+
+/* --- Logo --- */
+.landing-logo {
+    max-width: 400px; /* Adjust size as needed */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem; /* Space below the logo */
+}
+
+/* --- Slogan --- */
+.landing-slogan {
+    color: var(--rise-secondary-text-light); /* Muted color from index.css */
+    max-width: 450px;
+    margin-bottom: 2rem; /* More space before buttons */
+}
+
+/* --- Buttons Container --- */
+.landing-buttons {
+    /* Bootstrap's d-grid and col-* classes handle the layout */
+    margin-bottom: 2rem; /* Space below buttons */
+}
+
+/* Specific button styles are handled by .rise-btn--primary and .rise-btn--secondary-outline in index.css */
+
+/* --- Footer Section --- */
+.landing-footer {
+    width: 100%;
+    padding: 1rem 0;
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+
+.footer-item-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+    gap: 1.5rem; /* Space between footer items (adjust as needed) */
+    color: var(--rise-gray-text); /* Subtle color for footer text */
+    font-size: 0.85rem; /* Smaller font size for footer */
+    font-weight: 500;
+}
+
+.footer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem; /* Space between icon/emoji and text */
+}
+
+/* Ensure icons/emojis in the footer are aligned nicely */
+.footer-item span:first-child {
+    font-size: 1rem; /* Adjust emoji/icon size if needed */
+}
