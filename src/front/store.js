@@ -1,38 +1,57 @@
-// src/front/store/store.js
+const STORAGE_KEY = "rise_auth";
 
-const STORAGE_KEY = "rise_auth"; // Key for localStorage
+const MOCK_TASKS_INITIAL = [
+    { id: 1, name: "Drink 2 liters of water", completed: false },
+    { id: 2, name: "Exercise for 30 mins", completed: false },
+    { id: 3, name: "Read 15 pages", completed: false },
+    { id: 4, name: "Plan tomorrow", completed: false },
+];
 
-// Function to load initial state from localStorage
 export const initialStore = () => {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        // If data exists, parse it. Otherwise, initialize with user: null
-        return raw ? JSON.parse(raw) : { user: null, token: null };
+        const rawAuth = localStorage.getItem(STORAGE_KEY);
+        const authData = rawAuth ? JSON.parse(rawAuth) : { user: null, token: null };
+        return { ...authData, tasks: MOCK_TASKS_INITIAL }; // Initialize with mock tasks
     } catch (error) {
-        console.error("Error loading auth data from localStorage:", error);
-        localStorage.removeItem(STORAGE_KEY); // Clear corrupted data
-        return { user: null, token: null };
+        console.error("Error loading data from localStorage:", error);
+        localStorage.removeItem(STORAGE_KEY);
+        return { user: null, token: null, tasks: MOCK_TASKS_INITIAL };
     }
 };
 
-// The reducer function that handles state updates based on dispatched actions
 export default function storeReducer(state, action) {
     switch (action.type) {
-        case "LOGIN_SUCCESS":
-            // When login is successful, store the user data and token
+        case "LOGIN_SUCCESS": {
             const authData = { user: action.payload.user, token: action.payload.token };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(authData));
-            console.log("LOGIN_SUCCESS:", authData); // For debugging
-            return { ...state, ...authData }; // Update the state
-
-        case "LOGOUT":
-            // When logging out, clear the stored data
+            console.log("LOGIN_SUCCESS:", authData);
+            // Should consider loading real tasks from API here in the future
+            return { ...state, ...authData, tasks: MOCK_TASKS_INITIAL }; // Reset tasks on login for now
+        }
+        case "LOGOUT": {
             localStorage.removeItem(STORAGE_KEY);
-            console.log("LOGOUT"); // For debugging
-            return { user: null, token: null }; // Reset the state
-
+            console.log("LOGOUT");
+            return { user: null, token: null, tasks: [] };
+        }
+        case "SET_TASKS": {
+             return { ...state, tasks: action.payload };
+        }
+        case "TOGGLE_TASK": {
+            const updatedTasksToggle = state.tasks.map(task =>
+                task.id === action.payload.taskId ? { ...task, completed: !task.completed } : task
+            );
+            return { ...state, tasks: updatedTasksToggle };
+        }
+        case "ADD_TASK": {
+            const newId = state.tasks.length > 0 ? Math.max(...state.tasks.map(task => task.id)) + 1 : 1;
+            const newTask = {
+                id: newId,
+                name: action.payload.taskName,
+                completed: false,
+            };
+            return { ...state, tasks: [...state.tasks, newTask] };
+        }
         default:
-            // For any other action, return the current state unchanged
             return state;
     }
 }

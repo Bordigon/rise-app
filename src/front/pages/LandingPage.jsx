@@ -1,12 +1,20 @@
 // src/front/pages/LandingPage.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import RiseLandingPageLogo from '../assets/img/RiseLandingPageLogo.png';
 import Button from '../components/commons/Button.jsx';
 import "../styles/LandingPage.css";
 
+
+
 function LandingPage() {
     const navigate = useNavigate();
+    const { store } = useGlobalReducer();
+
+    if (store.token) {
+        return <Navigate to="/dashboard" replace />; 
+    }
 
     return (
         <div className="landing-page-container container-fluid d-flex flex-column justify-content-center align-items-center min-vh-100 p-3">
