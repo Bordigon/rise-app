@@ -1,8 +1,7 @@
-// src/front/pages/LandingPage.jsx
 import React from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import RiseLandingPageLogo from '../assets/img/RiseLandingPageLogo.png';
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png';
 import Button from '../components/commons/Button.jsx';
 import "../styles/LandingPage.css";
 

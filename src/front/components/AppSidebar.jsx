@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import "../styles/AppSidebar.css";
 
 
-import fireLogo from "../assets/img/fireLogo.png";
+import fireLogo from "../assets/img/appsidebarimgs/fireLogo.png";
 
 
 export default function AppSidebar({ user }) {

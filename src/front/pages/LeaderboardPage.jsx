@@ -1,9 +1,5 @@
 import React from "react";
 
-/**
- * Simple leaderboard page component.
- * Replace the static data with real data as needed.
- */
 export default function LeaderboardPage() {
     const samplePlayers = [
         { id: 1, name: "Alice", score: 1200 },
