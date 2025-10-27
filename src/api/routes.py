@@ -61,8 +61,8 @@ def login():
     email = data.get('email')
     password = data.get('password')
     user = db.session.execute(select(User).where(
-        User.email == email)).scalar_one()
-    if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        User.email == email)).scalar()
+    if user is None or not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
         return jsonify({"msg": "Bad username or password"}), 401
 
     # ---------- crea los access y refresh tokens, recordar que NO tienen JWT_KEY aun
@@ -78,6 +78,11 @@ def login():
 def handle_delete_user():
     user_id = get_jwt_identity()
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    if user is None:
+        return jsonify(msg = "Usuario no válido"), 400
+    tasks = db.session.execute(select(Task).where(Task.user_id == user_id)).scalars().all()
+    for t in tasks:
+        db.session.delete(t) 
     db.session.delete(user)
     db.session.commit()
     return jsonify(msg="user deleted"), 200
@@ -100,7 +105,7 @@ def handle_refresh_token():
 def profile():
     current_user_id = get_jwt_identity()
     user = db.session.execute(select(User).where(
-        User.id == current_user_id)).scalar_one()
+        User.id == current_user_id)).scalar()
     if user is None:
         return jsonify({"msg": "User not found"}), 404
 
@@ -117,8 +122,7 @@ def handle_recovery_time(tarea: Task):
     recovery = tarea.recovery_time
 
     # -------------- compara el recovery_time de la task, con la fecha de hoy
-    recovery_time = recovery - datetime.datetime.now()
-    if recovery_time.days < 0:
+    if recovery < datetime.datetime.now():
         tarea.done = True
         tarea.time_to_start = None
         db.session.commit()
@@ -180,6 +184,8 @@ def handle_get_undone_tasks():
 def handle_create_task():
     # --- obtengo el json que me han dado en el body de la request
     task_info = request.get_json(force=True)
+    if not task_info:
+        return jsonify({"msg": "Missing JSON in request"}), 400
 
     # ---- devuelve un json con los valores de stats y difficulty asignados por IA
     stats_difficulty = stats_and_difficulty(task_info["description"])
@@ -226,7 +232,7 @@ def handle_get_task(task_id):
     # -------------------- Compruebo si esa tarea es de ese usuario
     if get_task.user_id == int(user_id):
         return jsonify(get_task.serialize()), 200
-    return jsonify(msg="Esa tarea noe s de ese usuario")
+    return jsonify(msg="Esa tarea no es de ese usuario")
 
 
 # ----------------------------- función auxiliar para tratar con hábitos
@@ -268,7 +274,7 @@ def handle_task_done(task_id):
         user.creativity = user.creativity + task_done.creativity * task_done.difficulty
         user.social = user.social + task_done.social * task_done.difficulty
         total_points = (task_done.difficulty + task_done.mind +
-                        task_done.productivity + task_done.creativity + task_done.social) * task_done.difficulty + task_done.difficulty ^ 2
+                        task_done.productivity + task_done.creativity + task_done.social) * task_done.difficulty + task_done.difficulty ** 2
         user.level = user.level + total_points
 
         # ------------- en caso de que sea un hábito redirijo a la función auxiliar
@@ -322,14 +328,17 @@ def handle_get_all_taks():
     tasks = db.session.execute(select(Task)).scalars().all()
     task_list = []
     for t in tasks:
-        t = Task.serialize(t)
-        task_list.append(t)
+        task_list.append(t.serialize())
     return jsonify(task_list), 200
 
-
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+@api.route('/delete/<int:user_id>', methods = ['DELETE'])
+def handle_delete_user_admin(user_id):
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     if user is None:
-        return jsonify({"msg": "User not found"}), 404
-
-    return jsonify(user.serialize()), 200
+        return jsonify(msg = "ese usuario no existe"), 400
+    tasks_list = db.session.execute(select(Task).where(Task.user_id == user_id)).scalars().all()
+    for t in tasks_list:
+        db.session.delete(t)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify(msg = "ya se elimino al usuario y todas sus tareas"), 200 
