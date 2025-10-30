@@ -51,11 +51,11 @@ export default function AppSidebar({ user }) {
         </NavLink>
 
         <NavLink
-          to="/leaderboard"
+          to="/Community"
           className={({ isActive }) => "nav-item" + (isActive ? " active" : "")}
         >
-          <i className="bi bi-trophy"></i>
-          <span>Ranking</span>
+          <i className="bi bi-people-fill"></i>
+          <span>Community</span>
         </NavLink>
       </div>
 

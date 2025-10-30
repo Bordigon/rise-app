@@ -18,9 +18,9 @@ export default function PhoenixStreakFM({
     });
   }, [completed]);
 
-  const dur = 1.15; // transformation duration
+  const dur = 1.15;
   const ringSize = size * 0.68;
-  const ringY = size * 0.74; // centered correctly
+  const ringY = size * 0.74; 
   const ringX = size * 0.5;
 
   return (
