@@ -1,6 +1,6 @@
 import { Profiler } from "react";
 import { authFetch } from "./authService";
-export const api = `https://ghastly-spooky-fishsticks-r4x6gvqgxgwjcpppj-3001.app.github.dev`;
+export const api = import.meta.env.VITE_BACKEND_URL;
 
 /*export const authFetch = async (url, options = {}) => {
     const token = localStor
@@ -57,7 +57,6 @@ export const userDelete = async () => {
   return resp;
 };
 
-
 //----------------------------------- Durante el desarrollo solamente
 export const getUsers = async () => {
   try {
@@ -70,15 +69,14 @@ export const getUsers = async () => {
   }
 };
 
-
-export const deleteUser = async(id)=>{
-  try{
-  const response = await fetch(`${api}/api/delete/${id}`,{
-    method:"DELETE",
-    headers:{
-      "Content-Type":"application/json"
-    }
-  });
+export const deleteUser = async (id) => {
+  try {
+    const response = await fetch(`${api}/api/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     console.log(response.ok);
     console.log(response.status);
@@ -88,4 +86,4 @@ export const deleteUser = async(id)=>{
   } catch (err) {
     console.error(`la cagaste ${err}`);
   }
-}
+};
