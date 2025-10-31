@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { userRegister, userLogin, userProfile, userDelete, getUsers } from './userService.js';
-import { tasksUndone } from './taskService.js';
+import { userRegister, userLogin, userProfile, userDelete, getUsers, deleteUser } from './userService.js';
+import { allTasks, taskCreate, taskDelete, taskDone, taskGet, taskList, taskUndone } from './taskService.js';
 
 function Pruebas() {
     const [info, setInfo] = useState("");
@@ -18,7 +18,19 @@ function Pruebas() {
 
             await userProfile();
 
-            await tasksUndone();
+            await taskCreate("sacar a pasear el perro", null, null, false);
+
+            await taskGet(6);
+
+            await taskDone(7);
+
+            await taskDelete(8);
+
+            await taskUndone();
+
+            await taskList();
+
+            await allTasks();
 
             const users = await getUsers();
 

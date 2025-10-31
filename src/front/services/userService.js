@@ -47,8 +47,7 @@ export const userLogin = async (body) => {
 };
 
 export const userProfile = async () => {
-  const options = { method: "GET" };
-  const data = await authFetch(`api/profile`, options);
+  const data = await authFetch(`api/profile`);
   console.log(data);
   return data;
 };
@@ -58,6 +57,8 @@ export const userDelete = async () => {
   return resp;
 };
 
+
+//----------------------------------- Durante el desarrollo solamente
 export const getUsers = async () => {
   try {
     const userTasks = await fetch(`${api}/api/users`);
@@ -68,3 +69,23 @@ export const getUsers = async () => {
     console.error(`La has cagado, ${err}`);
   }
 };
+
+
+export const deleteUser = async(id)=>{
+  try{
+  const response = await fetch(`${api}/api/delete/${id}`,{
+    method:"DELETE",
+    headers:{
+      "Content-Type":"application/json"
+    }
+  });
+
+    console.log(response.ok);
+    console.log(response.status);
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (err) {
+    console.error(`la cagaste ${err}`);
+  }
+}
