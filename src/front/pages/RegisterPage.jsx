@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
-import RiseLandingPageLogo from '../assets/img/RiseLandingPageLogo.png'; 
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png'; 
 import Button from '../components/commons/Button.jsx'; 
 import "../styles/AuthPages.css"; 
 

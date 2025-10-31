@@ -11,11 +11,21 @@ export const initialStore = () => {
     try {
         const rawAuth = localStorage.getItem(STORAGE_KEY);
         const authData = rawAuth ? JSON.parse(rawAuth) : { user: null, token: null };
-        return { ...authData, tasks: MOCK_TASKS_INITIAL }; // Initialize with mock tasks
+        
+        return { 
+            ...authData, 
+            tasks: MOCK_TASKS_INITIAL,
+            completedDays: new Set()
+        };
     } catch (error) {
         console.error("Error loading data from localStorage:", error);
         localStorage.removeItem(STORAGE_KEY);
-        return { user: null, token: null, tasks: MOCK_TASKS_INITIAL };
+        return { 
+            user: null, 
+            token: null, 
+            tasks: MOCK_TASKS_INITIAL,
+            completedDays: new Set()
+        };
     }
 };
 
@@ -25,16 +35,22 @@ export default function storeReducer(state, action) {
             const authData = { user: action.payload.user, token: action.payload.token };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(authData));
             console.log("LOGIN_SUCCESS:", authData);
-            // Should consider loading real tasks from API here in the future
-            return { ...state, ...authData, tasks: MOCK_TASKS_INITIAL }; // Reset tasks on login for now
+            return { 
+                ...state, 
+                ...authData, 
+                tasks: MOCK_TASKS_INITIAL, 
+                completedDays: new Set() 
+            };
         }
         case "LOGOUT": {
             localStorage.removeItem(STORAGE_KEY);
             console.log("LOGOUT");
-            return { user: null, token: null, tasks: [] };
-        }
-        case "SET_TASKS": {
-             return { ...state, tasks: action.payload };
+            return { 
+                user: null, 
+                token: null, 
+                tasks: [],
+                completedDays: new Set()
+            };
         }
         case "TOGGLE_TASK": {
             const updatedTasksToggle = state.tasks.map(task =>
@@ -50,6 +66,16 @@ export default function storeReducer(state, action) {
                 completed: false,
             };
             return { ...state, tasks: [...state.tasks, newTask] };
+        }
+        case "MARK_DAY_COMPLETE": {
+            const newCompletedDays = new Set(state.completedDays);
+            newCompletedDays.add(action.payload.dayKey);
+            return { ...state, completedDays: newCompletedDays };
+        }
+        case "MARK_DAY_INCOMPLETE": {
+            const newCompletedDays = new Set(state.completedDays);
+            newCompletedDays.delete(action.payload.dayKey);
+            return { ...state, completedDays: newCompletedDays };
         }
         default:
             return state;

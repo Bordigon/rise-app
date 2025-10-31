@@ -9,7 +9,7 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx"; 
-import LeaderboardPage from "./pages/LeaderboardPage.jsx";
+import CommunityPage from "./pages/CommunityPage.jsx";
 
 export default function AppRouter() {
   return (
@@ -30,8 +30,8 @@ export default function AppRouter() {
           element={<PrivateRoute><ProfilePage /></PrivateRoute>}
         />
         <Route
-          path="/leaderboard"
-          element={<PrivateRoute><LeaderboardPage /></PrivateRoute>}
+          path="/community"
+          element={<PrivateRoute><CommunityPage /></PrivateRoute>}
         />
 
         {/* Fallback route */}
