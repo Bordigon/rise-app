@@ -7,6 +7,7 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import useGlobalReducer from "./hooks/useGlobalReducer.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
+import Pruebas from "./services/Pruebas.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx"; 
 import LeaderboardPage from "./pages/LeaderboardPage.jsx";
@@ -34,6 +35,10 @@ export default function AppRouter() {
           element={<PrivateRoute><LeaderboardPage /></PrivateRoute>}
         />
 
+        <Route
+          path = "/pruebas"
+          element = {<Pruebas />}
+        />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
