@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { userRegister, userLogin, userProfile, userDelete } from './userService.js';
+import { userRegister, userLogin, userProfile, userDelete, getUsers } from './userService.js';
+import { tasksUndone } from './taskService.js';
 
 function Pruebas() {
     const [info, setInfo] = useState("");
@@ -7,25 +8,21 @@ function Pruebas() {
 
     const loginUser = async () => {
         let body = {
-            email: "test176175@gmail.com",
-            password: "yo soy groot",
-            name: "grrrrot"
+            "email": "gistavo@gmail.com",
+            "password": "yo soy groot"
         }
         console.log("Enviando:", body);
 
         try {
-            await userRegister(body);
-            body = {
-                email: "test176175@gmail.com",
-                password: "yo soy groot"
-            }
             await userLogin(body);
 
             await userProfile();
 
-            const erase = await userDelete();
+            await tasksUndone();
 
-            return erase
+            const users = await getUsers();
+
+            return users;
         } catch (error) {
             console.error("Error completo:", error);
             setInfo(`Error: ${error.message}`);

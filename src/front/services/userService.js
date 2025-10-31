@@ -60,9 +60,10 @@ export const userDelete = async () => {
 
 export const getUsers = async () => {
   try {
-    const userTasks = await fetch(`${api}api/users`);
+    const userTasks = await fetch(`${api}/api/users`);
     const users = await userTasks.json();
-    return users[0].email;
+    console.log(users);
+    return users;
   } catch (err) {
     console.error(`La has cagado, ${err}`);
   }
