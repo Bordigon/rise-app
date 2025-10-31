@@ -12,10 +12,11 @@ import bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, decode_token, create_refresh_token
 import jwt
 import datetime
+from flask_cors import CORS
 
 
 api = Blueprint('api', __name__)
-
+CORS(api)
 
 
 # RECORDATORIO: los tokens acá NO tienen JWT_KEY, se dejan para el desarrollo final
@@ -33,10 +34,13 @@ api = Blueprint('api', __name__)
 def register():
     data = request.get_json()
     email = data.get("email")
+    name = data.get("name")
     print(email)
     password = str(data.get("password"))
     if User.query.filter_by(email=email).first():
-        return jsonify({"msg": "User already exists"}), 400
+        return jsonify({"msg": "Email already exists"}), 400
+    if User.query.filter_by(name=name).first():
+        return jsonify(msg="Name already in use"), 400
     salt = bcrypt.gensalt()
     name = str(data.get("name"))
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
@@ -79,10 +83,11 @@ def handle_delete_user():
     user_id = get_jwt_identity()
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     if user is None:
-        return jsonify(msg = "Usuario no válido"), 400
-    tasks = db.session.execute(select(Task).where(Task.user_id == user_id)).scalars().all()
+        return jsonify(msg="Usuario no válido"), 400
+    tasks = db.session.execute(select(Task).where(
+        Task.user_id == user_id)).scalars().all()
     for t in tasks:
-        db.session.delete(t) 
+        db.session.delete(t)
     db.session.delete(user)
     db.session.commit()
     return jsonify(msg="user deleted"), 200
@@ -331,14 +336,16 @@ def handle_get_all_taks():
         task_list.append(t.serialize())
     return jsonify(task_list), 200
 
-@api.route('/delete/<int:user_id>', methods = ['DELETE'])
+
+@api.route('/delete/<int:user_id>', methods=['DELETE'])
 def handle_delete_user_admin(user_id):
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     if user is None:
-        return jsonify(msg = "ese usuario no existe"), 400
-    tasks_list = db.session.execute(select(Task).where(Task.user_id == user_id)).scalars().all()
+        return jsonify(msg="ese usuario no existe"), 400
+    tasks_list = db.session.execute(select(Task).where(
+        Task.user_id == user_id)).scalars().all()
     for t in tasks_list:
         db.session.delete(t)
     db.session.delete(user)
     db.session.commit()
-    return jsonify(msg = "ya se elimino al usuario y todas sus tareas"), 200 
+    return jsonify(msg="ya se elimino al usuario y todas sus tareas"), 200
