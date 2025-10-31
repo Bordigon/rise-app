@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { userRegister, userLogin } from './userService.js';
+import { userRegister, userLogin, userProfile, userDelete } from './userService.js';
 
 function Pruebas() {
     const [info, setInfo] = useState("");
@@ -7,25 +7,25 @@ function Pruebas() {
 
     const loginUser = async () => {
         let body = {
-            email: "test1761750657491@gmail.com",
-            password: "yo soy groot"
+            email: "test176175@gmail.com",
+            password: "yo soy groot",
+            name: "grrrrot"
         }
         console.log("Enviando:", body);
 
         try {
-            const data = await userLogin(body);
-            console.log("Respuesta del servidor:", data);
-            console.log(data.token);
-
-            if (data && data.name) {
-                setInfo(`Usuario creado: ${data.name}`);
-            } else if (data && data.msg) {
-                setInfo(`Mensaje: ${data.msg}`);
-            } else {
-                setInfo("Respuesta inesperada del servidor");
+            await userRegister(body);
+            body = {
+                email: "test176175@gmail.com",
+                password: "yo soy groot"
             }
+            await userLogin(body);
 
-            return data;
+            await userProfile();
+
+            const erase = await userDelete();
+
+            return erase
         } catch (error) {
             console.error("Error completo:", error);
             setInfo(`Error: ${error.message}`);

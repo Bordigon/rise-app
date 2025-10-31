@@ -1,4 +1,6 @@
-const api = `https://ghastly-spooky-fishsticks-r4x6gvqgxgwjcpppj-3001.app.github.dev`;
+import { Profiler } from "react";
+import { authFetch } from "./authService";
+export const api = `https://ghastly-spooky-fishsticks-r4x6gvqgxgwjcpppj-3001.app.github.dev`;
 
 /*export const authFetch = async (url, options = {}) => {
     const token = localStor
@@ -42,6 +44,18 @@ export const userLogin = async (body) => {
   } catch (err) {
     console.error(`la cagaste en ${err}`);
   }
+};
+
+export const userProfile = async () => {
+  const options = { method: "GET" };
+  const data = await authFetch(`api/profile`, options);
+  console.log(data);
+  return data;
+};
+
+export const userDelete = async () => {
+  const resp = await authFetch(`api/user/delete`, { method: "DELETE" });
+  return resp;
 };
 
 export const getUsers = async () => {
