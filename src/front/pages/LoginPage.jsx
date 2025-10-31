@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx"; 
-import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png'; 
-import Button from '../components/commons/Button.jsx'; 
-import "../styles/AuthPages.css"; 
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png';
+import Button from '../components/commons/Button.jsx';
+import "../styles/AuthPages.css";
+import { userLogin } from '../services/userService.js';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -24,13 +25,16 @@ function LoginPage() {
       await new Promise(r => setTimeout(r, 600)); // Simulate delay
       const fakeUser = { id: 1, username: "PhoenixPlayer", level: 1 }; // Example user data
       const fakeToken = "FAKE_JWT_TOKEN_123";
+      //-------------------------------------------------------- ac'a me qued'e
+      const body = { email: email }
+      const data = await userLogin(body);
 
       // Dispatch the action to the store reducer
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: { user: fakeUser, token: fakeToken }
       });
-      
+
       navigate("/dashboard"); // Redirect after successful dispatch
     } catch (err) {
       console.error("Login failed:", err); // Log the actual error
@@ -103,15 +107,15 @@ function LoginPage() {
         </div>
       </div>
 
-       {/* Footer section (using CSS for positioning) */}
-       <div className="auth-footer">
-          <div className="auth-footer-item-list">
-              <div className="auth-footer-item">🧠 Mind</div>
-              <div className="auth-footer-item">💪 Body</div>
-              <div className="auth-footer-item">🚀 Productivity</div>
-              <div className="auth-footer-item">❤️ Social</div>
-              <div className="auth-footer-item">🎨 Creativity</div>
-          </div>
+      {/* Footer section (using CSS for positioning) */}
+      <div className="auth-footer">
+        <div className="auth-footer-item-list">
+          <div className="auth-footer-item">🧠 Mind</div>
+          <div className="auth-footer-item">💪 Body</div>
+          <div className="auth-footer-item">🚀 Productivity</div>
+          <div className="auth-footer-item">❤️ Social</div>
+          <div className="auth-footer-item">🎨 Creativity</div>
+        </div>
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import completionSound from "../assets/audio/completionSound.mp3";
 import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
 import DailyTasksModal from "../components/DailyTasksModal.jsx";
 import XpGainIndicator from "../components/XpGainIndicator.jsx";
+import { taskList } from "../services/taskService.js";
 
 const MOCK_MOTIVATIONAL_QUOTE = {
   quote: "The first step doesn't get you where you want to go, but it takes you out of where you are.",
@@ -29,7 +30,14 @@ function DashboardPage() {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  const tasks = store.tasks || [];
+  const handleGetTasks = async () => {
+    const data = await taskList();
+    dispatch({ type: "SET_TASK", payload: { data } })
+  }
+
+
+  const tasks = store.user || [];
+  console.log(tasks);
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
   const completedDays = store.completedDays || new Set();
 
@@ -41,7 +49,7 @@ function DashboardPage() {
   const [pulseExpBar, setPulseExpBar] = useState(false);
   const completionAudioRef = useRef(new Audio(completionSound));
   const [celebrateTrigger, setCelebrateTrigger] = useState(0);
-  
+
   const weekProgress = useMemo(() => {
     const todayKey = localKey(new Date());
     return [...Array(7)].map((_, i) => {
@@ -70,7 +78,7 @@ function DashboardPage() {
     if (!targetTask) return;
 
     const futureTasks = tasks.map(t =>
-        t.id === taskId ? { ...t, completed: !t.completed } : t
+      t.id === taskId ? { ...t, completed: !t.completed } : t
     );
     const willBeDayComplete = futureTasks.every(t => t.completed) && futureTasks.length > 0;
     const todayKey = currentDay?.key;
@@ -84,7 +92,7 @@ function DashboardPage() {
     if (willBeDayComplete && !isCurrentlyComplete) {
       console.log("¡Día recién completado! Disparando efectos...");
       dispatch({ type: "MARK_DAY_COMPLETE", payload: { dayKey: todayKey } });
-      
+
       const xpGainedToday = 50;
       completionAudioRef.current.play().catch(e => console.error("Error playing sound:", e));
       setShowCompletionEffect(true);
@@ -96,8 +104,8 @@ function DashboardPage() {
       setCelebrateTrigger(x => x + 1);
       setShowDailyTasksModal(false);
     } else if (!willBeDayComplete && isCurrentlyComplete) {
-       console.log("Día descompletado.");
-       dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
+      console.log("Día descompletado.");
+      dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
     }
   };
 
