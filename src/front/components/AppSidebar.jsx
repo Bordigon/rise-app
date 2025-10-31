@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import "../styles/AppSidebar.css";
 
 
-import fireLogo from "../assets/img/fireLogo.png";
+import fireLogo from "../assets/img/appsidebarimgs/fireLogo.png";
 
 
 export default function AppSidebar({ user }) {
@@ -51,11 +51,11 @@ export default function AppSidebar({ user }) {
         </NavLink>
 
         <NavLink
-          to="/leaderboard"
+          to="/Community"
           className={({ isActive }) => "nav-item" + (isActive ? " active" : "")}
         >
-          <i className="bi bi-trophy"></i>
-          <span>Ranking</span>
+          <i className="bi bi-people-fill"></i>
+          <span>Community</span>
         </NavLink>
       </div>
 

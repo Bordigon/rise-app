@@ -1,33 +1,39 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx"; 
+import { Outlet, useLocation } from "react-router-dom"; 
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import AppSidebar from "../components/AppSidebar.jsx";
 import ExpBar from "../components/ExpBar.jsx";
+import "../styles/Layout.css"; 
 
 export default function Layout() {
     const { store } = useGlobalReducer();
-    
     const isAuthenticated = !!store.token;
+    const location = useLocation(); 
+    const isProfilePage = location.pathname === '/profile'; 
 
-    console.log("Layout - isAuthenticated:", isAuthenticated); 
+    const level = store.user?.level || 1;
+    const currentExp = store.user?.xp || 0;
+    const nextLevelExp = 1000;
+
+    
+    const mainClasses = isAuthenticated
+        ? `main-with-sidebar ${isProfilePage ? 'no-padding-profile' : ''}` 
+        : "main-full-width";
 
     return (
         <div className="app-layout">
-            {/* Conditionally render Sidebar */}
             {isAuthenticated && <AppSidebar user={store.user} />}
 
-            {/* Apply class based on authentication */}
-            <main className={isAuthenticated ? "main-with-sidebar" : "main-full-width"}>
+            {/* Aplica las clases construidas */}
+            <main className={mainClasses}>
                 <Outlet />
             </main>
 
-            {/* Conditionally render ExpBar */}
             {isAuthenticated && (
                 <ExpBar
-                    level={store.user?.level || 1}
-                    currentExp={store.user?.xp || 0}
-                    // Add nextLevelExp logic if available in store.user or calculate it
-                    nextLevelExp={1000} // Placeholder
+                    level={level}
+                    currentExp={currentExp}
+                    nextLevelExp={nextLevelExp}
                 />
             )}
         </div>

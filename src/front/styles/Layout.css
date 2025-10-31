@@ -1,0 +1,49 @@
+/* Contenedor principal del Layout */
+.app-layout {
+  display: flex;
+  min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la pantalla */
+}
+
+/* Estilo para el área principal CUANDO NO HAY sidebar */
+.main-full-width {
+  flex-grow: 1; /* Ocupa todo el espacio horizontal */
+  display: flex; /* Permite que el contenido interno (como ProfilePage) crezca */
+  flex-direction: column;
+  min-height: 100vh; /* Asegura altura completa */
+  /* El fondo y color vienen de 'body' o de la página específica */
+}
+
+/* Estilo para el área principal CUANDO SÍ HAY sidebar */
+.main-with-sidebar {
+  flex-grow: 1;
+  margin-left: var(--sidebar-w); /* Espacio para la sidebar (variable de index.css) */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* Fondo oscuro y texto claro para páginas internas */
+  background-color: var(--rise-dark-purple);
+  background-image:
+    radial-gradient(circle at 50% 10%, rgba(50, 10, 80, 0.3) 0%, transparent 70%),
+    linear-gradient(180deg, #1a0b1f 0%, #0d0714 100%);
+  background-repeat: no-repeat;
+  color: var(--rise-text-light);
+  position: relative; /* Contexto para posibles elementos absolutos dentro de las páginas */
+  /* Padding inferior para dejar espacio a ExpBar FIJA */
+  padding-bottom: var(--expbar-h); /* Ajusta si ExpBar no es fija o tiene margen */
+}
+
+/* Regla específica para anular padding en ProfilePage */
+.main-with-sidebar.no-padding-profile {
+  padding: 0 !important;
+  /* Mantenemos espacio para ExpBar si es necesario */
+  padding-bottom: var(--expbar-h) !important;
+}
+
+
+/* --- Responsividad --- */
+@media (max-width: 880px) {
+  /* Cuando la sidebar se colapsa (ver AppSidebar.css) */
+  .main-with-sidebar {
+    margin-left: var(--sidebar-w-collapsed); /* Usa el ancho colapsado */
+  }
+}

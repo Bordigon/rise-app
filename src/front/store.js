@@ -71,5 +71,17 @@ export default function storeReducer(state, action){
             );
             return{...state, tasks:updatedTasks};
         }
+        case "MARK_DAY_COMPLETE": {
+            const newCompletedDays = new Set(state.completedDays);
+            newCompletedDays.add(action.payload.dayKey);
+            return { ...state, completedDays: newCompletedDays };
+        }
+        case "MARK_DAY_INCOMPLETE": {
+            const newCompletedDays = new Set(state.completedDays);
+            newCompletedDays.delete(action.payload.dayKey);
+            return { ...state, completedDays: newCompletedDays };
+        }
+        default:
+            return state;
     }
 }
