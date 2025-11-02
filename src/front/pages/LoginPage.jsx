@@ -5,6 +5,7 @@ import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLo
 import Button from '../components/commons/Button.jsx';
 import "../styles/AuthPages.css";
 import { userLogin } from '../services/userService.js';
+import { taskList } from '../services/taskService.js';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -21,24 +22,24 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      // Mock login logic
-      await new Promise(r => setTimeout(r, 600)); // Simulate delay
-      const fakeUser = { id: 1, username: "PhoenixPlayer", level: 1 }; // Example user data
-      const fakeToken = "FAKE_JWT_TOKEN_123";
-      //-------------------------------------------------------- ac'a me qued'e
-      const body = { email: email }
+      const body = { email: email, password: password }
       const data = await userLogin(body);
+      var user = JSON.stringify(data.user);
+      console.log("console.log del user")
+      console.log(data.refresh_token);
+      const listaTask = await taskList()
 
       // Dispatch the action to the store reducer
-      dispatch({
+      await dispatch({
         type: "LOGIN_SUCCESS",
-        payload: { user: fakeUser, token: fakeToken }
+        payload: { user: user, token: data.token, refresh_token: data.refresh_token, tasks: listaTask }
       });
+
 
       navigate("/dashboard"); // Redirect after successful dispatch
     } catch (err) {
       console.error("Login failed:", err); // Log the actual error
-      setError("Error al iniciar sesión. Verifica tus credenciales.");
+      setError("Error al iniciar sesión. Verifica tus credenciales." + err);
     } finally {
       setLoading(false);
     }

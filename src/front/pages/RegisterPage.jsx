@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png'; 
 import Button from '../components/commons/Button.jsx'; 
 import "../styles/AuthPages.css"; 
+import { userRegister } from '../services/userService.js';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -25,33 +26,19 @@ function RegisterPage() {
         setLoading(true);
 
         // Keep using fetch for mock registration for now
-        const apiUrl = import.meta.env.VITE_BACKEND_URL || 'https://default-backend.example.com'; // Use env var
-        const endpoint = `${apiUrl}/register`;
-
-        const payload = { username, email, password };
-
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert(data.message || 'Cuenta creada. Ahora, por favor, inicia sesión.');
-                navigate('/login');
-            } else {
-                setError(data.message || 'Ocurrió un error al registrarse.');
-            }
-        } catch (err) {
-            console.error('Error de red o del servidor:', err);
-            setError('No se pudo conectar con el servidor. Inténtalo de nuevo.');
-        } finally {
-            setLoading(false);
+        const body = {
+            email:email, 
+            password:password, 
+            name:username
         }
-    };
+        const response = await userRegister(body)
+        setLoading(false)
+        console.log(response)
+        if (response==200) {
+                alert('Cuenta creada. Ahora, por favor, inicia sesión.');
+                navigate('/login');
+        };
+    }
 
     return (
         // Added class for specific styling

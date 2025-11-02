@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import useGlobalReducer from '../hooks/useGlobalReducer.jsx'; // Make sure this hook is correctly implemented
 import '../styles/ProfilePage.css';
 import ProfileCategoryModal from '../components/ProfileCategoryModal.jsx';
@@ -22,6 +22,7 @@ import greenOrbImg from "../assets/img/profilepageimgs/orbs/green-orb.png";
 import yellowOrbImg from "../assets/img/profilepageimgs/orbs/yellow-orb.png";
 import purpleOrbImg from "../assets/img/profilepageimgs/orbs/purple-orb.png";
 import redOrbImg from "../assets/img/profilepageimgs/orbs/red-orb.png";
+import { userProfile } from '../services/userService.js';
 
 // --- 2. Define Static Category Data ---
 const CATEGORIES_DATA = {
@@ -87,6 +88,24 @@ const MOCK_USER_PROGRESS = {
 function ProfilePage() {
   const [activeCategoryKey, setActiveCategoryKey] = useState(null);
   const [userProgress, setUserProgress] = useState(MOCK_USER_PROGRESS);
+
+  const handleGetUserProgress = async()=>{
+    const data = await userProfile();
+    console.log(data)
+    const result = {categoryProgress:{
+      MIND: data.mind,
+    BODY: data.body,
+    PRODUCTIVITY: data.productivity,
+    SOCIAL: data.social,
+    CREATIVITY: data.creativity
+    }}
+    setUserProgress(result)
+    return data;
+  }
+
+  useEffect(()=>{
+    handleGetUserProgress()
+  },[])
 
   const eggsToRender = [
     CATEGORIES_DATA.CREATIVITY,

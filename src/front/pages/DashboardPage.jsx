@@ -19,7 +19,8 @@ import completionSound from "../assets/audio/completionSound.mp3";
 import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
 import DailyTasksModal from "../components/DailyTasksModal.jsx";
 import XpGainIndicator from "../components/XpGainIndicator.jsx";
-import { taskList } from "../services/taskService.js";
+import { taskCreate, taskDone, taskList } from "../services/taskService.js";
+import { userProfile } from "../services/userService.js";
 
 const MOCK_MOTIVATIONAL_QUOTE = {
   quote: "The first step doesn't get you where you want to go, but it takes you out of where you are.",
@@ -30,13 +31,9 @@ function DashboardPage() {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  const handleGetTasks = async () => {
-    const data = await taskList();
-    dispatch({ type: "SET_TASK", payload: { data } })
-  }
 
-
-  const tasks = store.user || [];
+  const tasks = store.tasks || [];
+  console.log("tasks del dispatch")
   console.log(tasks);
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
   const completedDays = store.completedDays || new Set();
@@ -64,30 +61,37 @@ function DashboardPage() {
     });
   }, [weekStart, completedDays]);
 
+  console.log("las tasks son:")
+  console.log(tasks);
   const currentDay = weekProgress.find((d) => d.isToday);
   const isPhoenixHappy = !!currentDay?.complete;
-  const pendingTasks = tasks.filter(task => !task.completed).length;
+  const pendingTasks = tasks.filter(task => !task.done).length;
   const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
 
-  const handleAddTask = (taskName) => {
-    dispatch({ type: "ADD_TASK", payload: { taskName } });
+  //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
+  const handleAddTask = async (taskName) => {
+    const data = await taskCreate(taskName, null, null, false)
+    dispatch({ type: "ADD_TASK", payload: { ...data } });
   };
 
-  const handleToggleTask = (taskId) => {
+  const handleToggleTask = async (taskId) => {
+    taskDone(taskId)
     const targetTask = tasks.find(t => t.id === taskId);
     if (!targetTask) return;
 
     const futureTasks = tasks.map(t =>
-      t.id === taskId ? { ...t, completed: !t.completed } : t
+      t.id === taskId ? { ...t, done: !t.done } : t
     );
-    const willBeDayComplete = futureTasks.every(t => t.completed) && futureTasks.length > 0;
+    const willBeDayComplete = futureTasks.every(t => t.done) && futureTasks.length > 0;
     const todayKey = currentDay?.key;
 
     if (!todayKey) return;
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    dispatch({ type: "TOGGLE_TASK", payload: { taskId } });
+    dispatch({ type: "TASK_DONE", payload: { taskId } });
+    const data = await userProfile()
+    localStorage.setItem("user-data", JSON.stringify(data))
 
     if (willBeDayComplete && !isCurrentlyComplete) {
       console.log("¡Día recién completado! Disparando efectos...");

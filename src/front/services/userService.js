@@ -19,7 +19,7 @@ export const userRegister = async (body) => {
     console.log(response.status);
     const data = await response.json();
     console.log(data);
-    return data;
+    return data, 200;
   } catch (err) {
     console.error(`la cagaste ${err}`);
   }

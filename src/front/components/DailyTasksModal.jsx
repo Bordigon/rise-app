@@ -14,10 +14,10 @@ function DailyTasksModal({
   const [newTaskText, setNewTaskText] = useState("");
 
   const defaultTasks = [
-    { id: 1, name: "Beber 2 litros de agua", completed: false },
-    { id: 2, name: "Hacer 30 min de ejercicio", completed: true },
-    { id: 3, name: "Leer 15 páginas", completed: false },
-    { id: 4, name: "Planificar el día siguiente", completed: false },
+    { id: 1, description: "Beber 2 litros de agua", done: false },
+    { id: 2, description: "Hacer 30 min de ejercicio", done: false },
+    { id: 3, description: "Leer 15 páginas", done: false },
+    { id: 4, description: "Planificar el día siguiente", done: false },
   ];
   const displayTasks =
     Array.isArray(tasks) && tasks.length > 0 ? tasks : defaultTasks;
@@ -53,19 +53,18 @@ function DailyTasksModal({
             <p className="text-center text-muted">No hay tareas para este día.</p>
           ) : (
             <ul className="tasks-list">
-              {displayTasks.map((task) => (
+              {displayTasks.map((tarea) => (
                 <li
-                  key={task.id}
-                  className={`task-item ${task.completed ? "completed" : ""}`}
+                  key={tarea.id}
+                  className={`task-item ${tarea.done ? "completed" : ""}`}
                 >
-                  <span className="task-name">{task.name}</span>
+                  <span className="task-name">{tarea.description}</span>
                   <button
-                    className={`toggle-task-button ${
-                      task.completed ? "completed" : ""
-                    }`}
-                    onClick={() => onToggleTask(task.id)}
+                    className={`toggle-task-button ${tarea.done ? "completed" : ""
+                      }`}
+                    onClick={() => onToggleTask(tarea.id)}
                   >
-                    {task.completed ? (
+                    {tarea.done ? (
                       <i className="bi bi-check-circle-fill"></i>
                     ) : (
                       <i className="bi bi-circle"></i>
