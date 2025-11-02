@@ -117,3 +117,4 @@ def stats_and_difficulty(info):
         response["reason"] = "Explicación no proporcionada"
 
     return response
+    
