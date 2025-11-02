@@ -97,6 +97,7 @@ main {
   align-items: center;
   justify-content: center;
   text-decoration: none; /* Remove underline if used as link */
+  white-space: nowrap;
 }
 .rise-btn:disabled {
   opacity: .55;

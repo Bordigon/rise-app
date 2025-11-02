@@ -30,8 +30,26 @@
 
 /* --- Buttons Container --- */
 .landing-buttons {
-    /* Bootstrap's d-grid and col-* classes handle the layout */
-    margin-bottom: 2rem; /* Space below buttons */
+    margin-bottom: 0; 
+}
+
+.landing-buttons-wrapper {
+    width: 100%; /* Ocupa todo el ancho */
+    display: flex; /* Usa flexbox */
+    justify-content: center; /* <-- ESTO CENTRARÁ EL DIV INTERNO */
+    margin-bottom: 2rem;
+}
+
+.hero-section {
+  display: flex;
+  flex-direction: column; /* Coloca el contenido verticalmente (logo, slogan, buttons) */
+  justify-content: center; /* <-- CENTRA VERTICALMENTE LOS ELEMENTOS */
+  align-items: center;    /* <-- CENTRA HORIZONTALMENTE LOS ELEMENTOS */
+  min-height: calc(100vh - 70px); /* Ocupa la altura de la ventana menos la altura del navbar (ajusta 70px si tu navbar es diferente) */
+  width: 100%;
+  padding: 4rem 1rem;
+  background-color: var(--rise-light-bg, #f8f9fa);
+  text-align: center; /* Asegura que el texto y los elementos inline-block se centren */
 }
 
 /* Specific button styles are handled by .rise-btn--primary and .rise-btn--secondary-outline in index.css */

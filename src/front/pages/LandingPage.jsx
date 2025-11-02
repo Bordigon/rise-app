@@ -29,15 +29,23 @@ function LandingPage() {
                 <p className="landing-slogan lead text-center mb-5 mx-auto" style={{ maxWidth: '450px' }}>
                     Elevate your habits, master your days, and transform your life!
                 </p>
-                <div className="landing-buttons d-grid gap-3 col-10 col-md-6 col-lg-5 mx-auto">
-                    {/* ESTE BOTÓN DEBE SER 'primary' */}
-                    <Button size="lg" variant="primary" onClick={() => navigate('/register')}>
-                        START YOUR ASCENT
-                    </Button>
-                    {/* Este es 'secondary-outline' (que ahora quieres con fondo, lo veremos en CSS) */}
-                    <Button size="lg" variant="secondary-outline" onClick={() => navigate('/login')}>
-                        I'M ALREADY A PHOENIX
-                    </Button>
+                <div className="landing-buttons-wrapper"> {/* <-- 1. Añade un wrapper */}
+                    <div className="d-grid gap-3 col-10 col-md-6 col-lg-5"> {/* <-- 2. Quita mx-auto de aquí */}
+                        <Button 
+                            size="lg" 
+                            variant="primary" 
+                            onClick={() => navigate('/register')}
+                            fullWidth>
+                            START YOUR ASCENT
+                        </Button>
+                        <Button 
+                            size="lg" 
+                            variant="secondary-outline" 
+                            onClick={() => navigate('/login')}
+                            fullWidth>
+                            I'M ALREADY A PHOENIX
+                        </Button>
+                    </div>
                 </div>
             </div>
 
