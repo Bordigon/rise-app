@@ -23,6 +23,8 @@ app = Flask(__name__)
 CORS(app)
 app.url_map.strict_slashes = False
 
+CORS(app)
+CORS(api)
 
 # ----------------------------- inicialización de JWTManager
 # --------------------en el trabajo final JWTManager debe tenet una JWT_KEY

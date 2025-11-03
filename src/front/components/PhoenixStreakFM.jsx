@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import phoenixSad from "../assets/img/phoenix-sad.png";
-import phoenixHappy from "../assets/img/phoenix-happy.png";
+import phoenixSad from "../assets/img/dashboardpageimgs/phoenix-sad.png";
+import phoenixHappy from "../assets/img/dashboardpageimgs/phoenix-happy.png";
 
 export default function PhoenixStreakFM({
   completed,
@@ -18,9 +18,9 @@ export default function PhoenixStreakFM({
     });
   }, [completed]);
 
-  const dur = 1.15; // transformation duration
+  const dur = 1.15;
   const ringSize = size * 0.68;
-  const ringY = size * 0.74; // centered correctly
+  const ringY = size * 0.74; 
   const ringX = size * 0.5;
 
   return (
@@ -80,14 +80,14 @@ export default function PhoenixStreakFM({
             animate={
               phase === "idle"
                 ? {
-                    scale: [1, 1.03, 1],
-                    transition: { duration: 1.8, repeat: Infinity },
-                  }
+                  scale: [1, 1.03, 1],
+                  transition: { duration: 1.8, repeat: Infinity },
+                }
                 : {
-                    y: [-rise * 0.2, -rise, -rise],
-                    opacity: [1, 0.2, 0],
-                    transition: { duration: dur, ease: "easeInOut" },
-                  }
+                  y: [-rise * 0.2, -rise, -rise],
+                  opacity: [1, 0.2, 0],
+                  transition: { duration: dur, ease: "easeInOut" },
+                }
             }
             exit={{ opacity: 0 }}
             onAnimationComplete={() => {
@@ -121,9 +121,9 @@ export default function PhoenixStreakFM({
               phase === "transform"
                 ? { opacity: 1, y: 0, scale: [1.12, 1.0] }
                 : {
-                    scale: [1.0, 1.03, 1.0],
-                    transition: { duration: 1.1, repeat: Infinity },
-                  }
+                  scale: [1.0, 1.03, 1.0],
+                  transition: { duration: 1.1, repeat: Infinity },
+                }
             }
             transition={{
               duration: phase === "transform" ? dur : 1.1,

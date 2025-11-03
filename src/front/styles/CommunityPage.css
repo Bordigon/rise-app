@@ -1,0 +1,58 @@
+/* src/front/styles/CommunityPage.css */
+
+.community-page-container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-title {
+  color: var(--rise-text-light, #fff);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  margin-bottom: 2rem;
+}
+
+/* Estilo de las pestañas */
+.community-nav-pills .nav-link {
+  background-color: transparent;
+  color: var(--rise-gray-text, #a9a2b8);
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border: 2px solid var(--rise-light-purple, #3B3E43);
+  transition: all 0.2s ease;
+}
+
+.community-nav-pills .nav-link.active {
+  background-color: var(--orange, #FF6A00);
+  color: #fff;
+  border-color: var(--orange, #FF6A00);
+  box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+}
+
+.community-nav-pills .nav-link:hover:not(.active) {
+  color: #fff;
+  border-color: var(--rise-gray-text, #a9a2b8);
+}
+
+/* Estilo de input genérico para esta página */
+/* (Puedes mover esto a index.css si lo usas en más sitios) */
+.custom-input {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: var(--rise-text-light) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+}
+.custom-input::placeholder {
+    color: var(--rise-gray-text) !important;
+    opacity: 0.6;
+}
+.custom-input:focus {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 106, 0, 0.25) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}

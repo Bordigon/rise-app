@@ -7,9 +7,10 @@ import RegisterPage from "./pages/RegisterPage.jsx";
 import useGlobalReducer from "./hooks/useGlobalReducer.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
+import Pruebas from "./services/Pruebas.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx"; 
-import LeaderboardPage from "./pages/LeaderboardPage.jsx";
+import CommunityPage from "./pages/CommunityPage.jsx";
 
 export default function AppRouter() {
   return (
@@ -30,10 +31,14 @@ export default function AppRouter() {
           element={<PrivateRoute><ProfilePage /></PrivateRoute>}
         />
         <Route
-          path="/leaderboard"
-          element={<PrivateRoute><LeaderboardPage /></PrivateRoute>}
+          path="/community"
+          element={<PrivateRoute><CommunityPage /></PrivateRoute>}
         />
 
+        <Route
+          path = "/pruebas"
+          element = {<Pruebas />}
+        />
         {/* Fallback route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
