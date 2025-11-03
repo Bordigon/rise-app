@@ -25,8 +25,6 @@ function LoginPage() {
       const body = { email: email, password: password }
       const data = await userLogin(body);
       var user = JSON.stringify(data.user);
-      console.log("console.log del user")
-      console.log(data.refresh_token);
       const listaTask = await taskList()
 
       // Dispatch the action to the store reducer

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; 
-import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png'; 
-import Button from '../components/commons/Button.jsx'; 
-import "../styles/AuthPages.css"; 
+import { useNavigate, Link } from 'react-router-dom';
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png';
+import Button from '../components/commons/Button.jsx';
+import "../styles/AuthPages.css";
 import { userRegister } from '../services/userService.js';
 
 function RegisterPage() {
@@ -24,40 +24,37 @@ function RegisterPage() {
         }
 
         setLoading(true);
-        try{
-        // Keep using fetch for mock registration for now
-        const body = {
-            email:email, 
-            password:password, 
-            name:username
+        try {
+            const body = {
+                email: email,
+                password: password,
+                name: username
+            }
+            const response = await userRegister(body)
+            if (response['httpcode']==201)
+                navigate("/login");
+            else {
+                console.error("Login failed:", response); // Log the actual error
+                setError(response['msg']);
+            }
+        } finally {
+            setLoading(false);
         }
-        const response = await userRegister(body)
-        setLoading(false)
-        console.log(response)
-        }catch(err){
-        if(response.status!=200){
-            console.log(err)
-            setError("Hubo un error de: "+ err);
-        }}finally{
-        if (response.status==200) {
-                alert('Cuenta creada. Ahora, por favor, inicia sesión.');
-                navigate('/login');
-        };}
     }
 
     return (
         // Added class for specific styling
         <div className="auth-page-container d-flex flex-column align-items-center justify-content-center min-vh-100 p-3">
             {/* Logo and Slogan */}
-             <div className="text-center mb-4">
+            <div className="text-center mb-4">
                 <img
-                  src={RiseLandingPageLogo}
-                  alt="RISE Logo"
-                  className="img-fluid auth-logo"
-                  style={{ maxWidth: '200px', marginBottom: '1rem' }}
+                    src={RiseLandingPageLogo}
+                    alt="RISE Logo"
+                    className="img-fluid auth-logo"
+                    style={{ maxWidth: '200px', marginBottom: '1rem' }}
                 />
             </div>
-             <p className="auth-slogan lead text-center mb-5 mx-auto" style={{ maxWidth: '400px' }}>
+            <p className="auth-slogan lead text-center mb-5 mx-auto" style={{ maxWidth: '400px' }}>
                 Elevate your habits, master your days, and transform your life!
             </p>
 
@@ -130,8 +127,8 @@ function RegisterPage() {
                 </div>
             </div>
 
-             {/* Footer section (using CSS for positioning) */}
-             <div className="auth-footer">
+            {/* Footer section (using CSS for positioning) */}
+            <div className="auth-footer">
                 <div className="auth-footer-item-list">
                     <div className="footer-item">🧠 Mind</div>
                     <div className="footer-item">💪 Body</div>

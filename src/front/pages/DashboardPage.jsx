@@ -43,10 +43,7 @@ function DashboardPage() {
   const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
   console.log("tasks del dispatch")
   console.log(tasks);
-  if (store.tasks[0] == null) {
-    setUsingDefaultTasks(1);
-  }
-  else{
+  if(store.tasks[0] != null){
     localStorage.setItem("user-tasks", JSON.stringify(tasks));
   }
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
@@ -101,7 +98,7 @@ function DashboardPage() {
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    if (usingDefaultTasks === 0) {
+    if (store.tasks[0]!=null) {
       dispatch({ type: "TASK_DONE", payload: { taskId } });
       taskDone(taskId);
       const data = await userProfile();

@@ -19,7 +19,7 @@ export const userRegister = async (body) => {
     console.log(response.status);
     const data = await response.json();
     console.log(data);
-    return data, 200;
+    return {data:data,httpcode: 201}
   } catch (err) {
     console.error(`la cagaste ${err}`);
   }
