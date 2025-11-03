@@ -24,7 +24,7 @@ function RegisterPage() {
         }
 
         setLoading(true);
-
+        try{
         // Keep using fetch for mock registration for now
         const body = {
             email:email, 
@@ -34,10 +34,15 @@ function RegisterPage() {
         const response = await userRegister(body)
         setLoading(false)
         console.log(response)
-        if (response==200) {
+        }catch(err){
+        if(response.status!=200){
+            console.log(err)
+            setError("Hubo un error de: "+ err);
+        }}finally{
+        if (response.status==200) {
                 alert('Cuenta creada. Ahora, por favor, inicia sesión.');
                 navigate('/login');
-        };
+        };}
     }
 
     return (

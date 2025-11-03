@@ -30,11 +30,25 @@ const MOCK_MOTIVATIONAL_QUOTE = {
 function DashboardPage() {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
+  const [usingDefaultTasks, setUsingDefaultTasks] = useState(0);
 
+  const defaultTasks = [
+    { id: 1, description: "Beber 2 litros de agua", done: false },
+    { id: 2, description: "Hacer 30 min de ejercicio", done: false },
+    { id: 3, description: "Leer 15 páginas", done: false },
+    { id: 4, description: "Planificar el día siguiente", done: false },
+  ];
 
-  const tasks = store.tasks || [];
+  console.log(store.tasks[0] == null)
+  const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
   console.log("tasks del dispatch")
   console.log(tasks);
+  if (store.tasks[0] == null) {
+    setUsingDefaultTasks(1);
+  }
+  else{
+    localStorage.setItem("user-tasks", JSON.stringify(tasks));
+  }
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
   const completedDays = store.completedDays || new Set();
 
@@ -61,8 +75,6 @@ function DashboardPage() {
     });
   }, [weekStart, completedDays]);
 
-  console.log("las tasks son:")
-  console.log(tasks);
   const currentDay = weekProgress.find((d) => d.isToday);
   const isPhoenixHappy = !!currentDay?.complete;
   const pendingTasks = tasks.filter(task => !task.done).length;
@@ -71,11 +83,11 @@ function DashboardPage() {
   //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
   const handleAddTask = async (taskName) => {
     const data = await taskCreate(taskName, null, null, false)
-    dispatch({ type: "ADD_TASK", payload: { ...data } });
+    await dispatch({ type: "ADD_TASK", payload: { ...data } });
+    setUsingDefaultTasks(0);
   };
 
   const handleToggleTask = async (taskId) => {
-    taskDone(taskId)
     const targetTask = tasks.find(t => t.id === taskId);
     if (!targetTask) return;
 
@@ -89,9 +101,12 @@ function DashboardPage() {
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    dispatch({ type: "TASK_DONE", payload: { taskId } });
-    const data = await userProfile()
-    localStorage.setItem("user-data", JSON.stringify(data))
+    if (usingDefaultTasks === 0) {
+      dispatch({ type: "TASK_DONE", payload: { taskId } });
+      taskDone(taskId);
+      const data = await userProfile();
+      localStorage.setItem("user-data", JSON.stringify(data));
+    }
 
     if (willBeDayComplete && !isCurrentlyComplete) {
       console.log("¡Día recién completado! Disparando efectos...");

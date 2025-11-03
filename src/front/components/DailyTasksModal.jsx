@@ -9,18 +9,14 @@ function DailyTasksModal({
   onAddTask,
   currentDay,
 }) {
+  
+
   if (!show) return null;
+
 
   const [newTaskText, setNewTaskText] = useState("");
 
-  const defaultTasks = [
-    { id: 1, description: "Beber 2 litros de agua", done: false },
-    { id: 2, description: "Hacer 30 min de ejercicio", done: false },
-    { id: 3, description: "Leer 15 páginas", done: false },
-    { id: 4, description: "Planificar el día siguiente", done: false },
-  ];
-  const displayTasks =
-    Array.isArray(tasks) && tasks.length > 0 ? tasks : defaultTasks;
+  const displayTasks = tasks
 
   const handleAddTask = () => {
     if (newTaskText.trim() && typeof onAddTask === "function") {
