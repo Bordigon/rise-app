@@ -188,3 +188,31 @@
 .add-task-button i {
     font-size: 1.2rem; /* Tamaño del icono de añadir */
 }
+
+/* --- ESTILOS PARA EL CHECKBOX DE HÁBITO --- */
+.add-habit-toggle {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0 5px; /* Pequeño padding para alinear con el input */
+  color: var(--rise-gray-text, #a9a2b8); /* Texto gris sutil */
+}
+
+.add-habit-toggle .form-check-input {
+  width: 1.2em; /* Checkbox un poco más grande */
+  height: 1.2em;
+  margin-right: 0.75rem; /* Espacio entre el check y el texto */
+  background-color: rgba(255, 255, 255, 0.1); /* Fondo oscuro */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.add-habit-toggle .form-check-input:checked {
+  background-color: var(--orange, #FF6A00); /* Color naranja al marcar */
+  border-color: var(--orange, #FF6A00);
+}
+
+.add-habit-toggle .form-check-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}

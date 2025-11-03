@@ -15,13 +15,15 @@ function DailyTasksModal({
 
 
   const [newTaskText, setNewTaskText] = useState("");
+  const [isHabit, setIsHabit] = useState(false);
 
   const displayTasks = tasks
 
   const handleAddTask = () => {
     if (newTaskText.trim() && typeof onAddTask === "function") {
-      onAddTask(newTaskText.trim());
+      onAddTask(newTaskText.trim(), isHabit);
       setNewTaskText("");
+      setIsHabit(false);
     }
   };
 
@@ -86,6 +88,21 @@ function DailyTasksModal({
             </button>
           </div>
         </div>
+
+        {/* --- 3. NUEVO CHECKBOX --- */}
+          <div className="add-habit-toggle form-check">
+            <input 
+              className="form-check-input" 
+              type="checkbox" 
+              id="isHabitCheck"
+              checked={isHabit}
+              onChange={(e) => setIsHabit(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="isHabitCheck">
+              Habit: This task will be repeated daily. 
+            </label>
+          </div>
+          {/* --- FIN DE NUEVO CHECKBOX --- */}
 
         <div className="modal-footer">
           <button className="btn btn-lg btn-rise-primary" onClick={onClose}>

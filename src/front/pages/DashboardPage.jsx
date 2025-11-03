@@ -19,7 +19,7 @@ import completionSound from "../assets/audio/completionSound.mp3";
 import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
 import DailyTasksModal from "../components/DailyTasksModal.jsx";
 import XpGainIndicator from "../components/XpGainIndicator.jsx";
-import { taskCreate, taskDone, taskList } from "../services/taskService.js";
+import { taskCreate, taskDone, taskList, taskUndone } from "../services/taskService.js";
 import { userProfile } from "../services/userService.js";
 
 const MOCK_MOTIVATIONAL_QUOTE = {
@@ -57,6 +57,7 @@ function DashboardPage() {
   const [pulseExpBar, setPulseExpBar] = useState(false);
   const completionAudioRef = useRef(new Audio(completionSound));
   const [celebrateTrigger, setCelebrateTrigger] = useState(0);
+  const [loadingTasks, setLoadingTasks] = useState(true);
 
   const weekProgress = useMemo(() => {
     const todayKey = localKey(new Date());
@@ -78,8 +79,8 @@ function DashboardPage() {
   const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
 
   //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
-  const handleAddTask = async (taskName) => {
-    const data = await taskCreate(taskName, null, null, false)
+  const handleAddTask = async (taskName, habit) => {
+    const data = await taskCreate(taskName, null, null, habit)
     await dispatch({ type: "ADD_TASK", payload: { ...data } });
     setUsingDefaultTasks(0);
   };

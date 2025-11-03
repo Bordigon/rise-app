@@ -1,12 +1,14 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/AppSidebar.css";
-
 
 import fireLogo from "../assets/img/appsidebarimgs/fireLogo.png";
 
-
 export default function AppSidebar({ user }) {
+  const { dispatch } = useGlobalReducer();
+  const navigate = useNavigate();
+
   const {
     username = "PhoenixPlayer",
     level = 1,
@@ -14,6 +16,12 @@ export default function AppSidebar({ user }) {
     currentStreak = 0,
     avatar,
   } = user || {};
+
+  const handleLogout = () => {
+  
+    dispatch({ type: "LOGOUT" });
+    navigate("/login");
+  }
 
   return (
     <nav className="app-sidebar">
@@ -69,6 +77,14 @@ export default function AppSidebar({ user }) {
 
         <button className="brasas-btn" type="button">
           {phoenixEmbers} Embers 🔥
+        </button>
+
+        <button 
+          type="button" 
+          className="btn btn-danger"
+          onClick={handleLogout}>
+
+          Logout
         </button>
       </div>
     </nav>
