@@ -9,11 +9,19 @@ function Pruebas() {
     const loginUser = async () => {
         let body = {
             "email": "gistavo@gmail.com",
-            "password": "yo soy groot"
+            "password": "yo soy groot",
+            "name": "gustavo"
         }
         console.log("Enviando:", body);
 
         try {
+            await userRegister(body);
+
+            body = {
+                "email": "gistavo@gmail.com",
+                "password": "yo soy groot"
+            }
+
             await userLogin(body);
 
             await userProfile();

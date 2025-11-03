@@ -126,9 +126,12 @@ def handle_recovery_time(tarea: Task):
         return True
     recovery = tarea.recovery_time
 
+    if tarea.recovery_time is None:
+        return False
+
     # -------------- compara el recovery_time de la task, con la fecha de hoy
     if recovery < datetime.datetime.now():
-        tarea.done = True
+        tarea.done = False
         tarea.time_to_start = None
         db.session.commit()
         return True
@@ -188,7 +191,7 @@ def handle_get_undone_tasks():
 @jwt_required()
 def handle_create_task():
     # --- obtengo el json que me han dado en el body de la request
-    task_info = request.get_json(force=True)
+    task_info = request.get_json()
     if not task_info:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
@@ -216,9 +219,10 @@ def handle_create_task():
     # --------------- agrego new_task a la base de datos
     db.session.add(new_task)
     db.session.commit()
-    task_id = db.session.execute(
-        select(Task).order_by(Task.id.desc())).scalar().id
-    return jsonify(msg="task created", task_id=task_id), 200
+    task = db.session.execute(select(Task).where(
+        Task.user_id == user_id).order_by(Task.id.desc())).scalar()
+    print(task.serialize())
+    return jsonify(task.serialize()), 200
 
 
 # ---------------------------------- /tasks/<int> es un get, devuelve una tarea en particular por su id

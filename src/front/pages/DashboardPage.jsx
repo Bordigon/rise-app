@@ -19,6 +19,8 @@ import completionSound from "../assets/audio/completionSound.mp3";
 import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
 import DailyTasksModal from "../components/DailyTasksModal.jsx";
 import XpGainIndicator from "../components/XpGainIndicator.jsx";
+import { taskCreate, taskDone, taskList } from "../services/taskService.js";
+import { userProfile } from "../services/userService.js";
 
 const MOCK_MOTIVATIONAL_QUOTE = {
   quote: "The first step doesn't get you where you want to go, but it takes you out of where you are.",
@@ -28,8 +30,22 @@ const MOCK_MOTIVATIONAL_QUOTE = {
 function DashboardPage() {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
+  const [usingDefaultTasks, setUsingDefaultTasks] = useState(0);
 
-  const tasks = store.tasks || [];
+  const defaultTasks = [
+    { id: 1, description: "Beber 2 litros de agua", done: false },
+    { id: 2, description: "Hacer 30 min de ejercicio", done: false },
+    { id: 3, description: "Leer 15 páginas", done: false },
+    { id: 4, description: "Planificar el día siguiente", done: false },
+  ];
+
+  console.log(store.tasks[0] == null)
+  const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
+  console.log("tasks del dispatch")
+  console.log(tasks);
+  if(store.tasks[0] != null){
+    localStorage.setItem("user-tasks", JSON.stringify(tasks));
+  }
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
   const completedDays = store.completedDays || new Set();
 
@@ -41,7 +57,7 @@ function DashboardPage() {
   const [pulseExpBar, setPulseExpBar] = useState(false);
   const completionAudioRef = useRef(new Audio(completionSound));
   const [celebrateTrigger, setCelebrateTrigger] = useState(0);
-  
+
   const weekProgress = useMemo(() => {
     const todayKey = localKey(new Date());
     return [...Array(7)].map((_, i) => {
@@ -58,33 +74,41 @@ function DashboardPage() {
 
   const currentDay = weekProgress.find((d) => d.isToday);
   const isPhoenixHappy = !!currentDay?.complete;
-  const pendingTasks = tasks.filter(task => !task.completed).length;
+  const pendingTasks = tasks.filter(task => !task.done).length;
   const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
 
-  const handleAddTask = (taskName) => {
-    dispatch({ type: "ADD_TASK", payload: { taskName } });
+  //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
+  const handleAddTask = async (taskName) => {
+    const data = await taskCreate(taskName, null, null, false)
+    await dispatch({ type: "ADD_TASK", payload: { ...data } });
+    setUsingDefaultTasks(0);
   };
 
-  const handleToggleTask = (taskId) => {
+  const handleToggleTask = async (taskId) => {
     const targetTask = tasks.find(t => t.id === taskId);
     if (!targetTask) return;
 
     const futureTasks = tasks.map(t =>
-        t.id === taskId ? { ...t, completed: !t.completed } : t
+      t.id === taskId ? { ...t, done: !t.done } : t
     );
-    const willBeDayComplete = futureTasks.every(t => t.completed) && futureTasks.length > 0;
+    const willBeDayComplete = futureTasks.every(t => t.done) && futureTasks.length > 0;
     const todayKey = currentDay?.key;
 
     if (!todayKey) return;
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    dispatch({ type: "TOGGLE_TASK", payload: { taskId } });
+    if (store.tasks[0]!=null) {
+      dispatch({ type: "TASK_DONE", payload: { taskId } });
+      taskDone(taskId);
+      const data = await userProfile();
+      localStorage.setItem("user-data", JSON.stringify(data));
+    }
 
     if (willBeDayComplete && !isCurrentlyComplete) {
       console.log("¡Día recién completado! Disparando efectos...");
       dispatch({ type: "MARK_DAY_COMPLETE", payload: { dayKey: todayKey } });
-      
+
       const xpGainedToday = 50;
       completionAudioRef.current.play().catch(e => console.error("Error playing sound:", e));
       setShowCompletionEffect(true);
@@ -96,8 +120,8 @@ function DashboardPage() {
       setCelebrateTrigger(x => x + 1);
       setShowDailyTasksModal(false);
     } else if (!willBeDayComplete && isCurrentlyComplete) {
-       console.log("Día descompletado.");
-       dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
+      console.log("Día descompletado.");
+      dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
     }
   };
 
