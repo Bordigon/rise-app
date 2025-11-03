@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import useGlobalReducer from '../../hooks/useGlobalReducer';
 import '../../styles/LeaderboardTab.css';
 
-
+import { getUsers } from '../../services/userService.js'
 import goldenEgg from '../../assets/img/communitypageimgs/eggmedals/golden-egg.png';
 import silverEgg from '../../assets/img/communitypageimgs/eggmedals/silver-egg.png';
 import bronzeEgg from '../../assets/img/communitypageimgs/eggmedals/bronze-egg.png';
@@ -19,8 +19,7 @@ export default function LeaderboardTab() {
   const currentUser = store.user;
   const token = store.token;
 
-  useEffect(() => {
-    // --- SIMULACIÓN DE API (MOCK DATA) ---
+  /*
     const MOCK_LEADERBOARD = [
       { id: 10, username: "PhoenixKing", level: 15, xp: 15000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
       { id: 12, username: "HabitQueen", level: 14, xp: 14200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
@@ -38,32 +37,18 @@ export default function LeaderboardTab() {
       { id: 19, username: "DreamerDragon", level: 11, xp: 11500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=DreamerDragon` },
       { id: 20, username: "LearnerLion", level: 13, xp: 13000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
     ].sort((a, b) => b.xp - a.xp).map((user, index) => ({ ...user, rank: index + 1 })); // Asignar rank después de ordenar
+*/
+  const handleGetData = async () => {
+    const data = await getUsers();
+    console.log(data)
+    const rankedList = data.sort((a, b) => b.level - a.level).map((user, index) => ({ ...user, rank: index + 1 }));
+    console.log(leaderboardData)
+    setLeaderboardData(rankedList);
+  }
 
-    setLeaderboardData(MOCK_LEADERBOARD);
+  useEffect(() => {
+    handleGetData();
     setLoading(false);
-
-    // --- CÓDIGO REAL DEL BACKEND  ---
-    /*
-    const fetchLeaderboard = async () => {
-      if (!token) return;
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`${API_URL}/api/leaderboard`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('Failed to fetch leaderboard');
-        const data = await response.json();
-        // Asume que la API devuelve los usuarios ordenados y con 'rank' incluido
-        setLeaderboardData(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLeaderboard();
-    */
   }, [token]);
 
   const filteredLeaderboard = useMemo(() => {
@@ -71,7 +56,7 @@ export default function LeaderboardTab() {
       return leaderboardData;
     }
     return leaderboardData.filter(user =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [leaderboardData, searchTerm]);
 
@@ -89,11 +74,11 @@ export default function LeaderboardTab() {
     return '';
   };
 
- 
+
   const currentUserRank = useMemo(() => {
     if (!currentUser) return null;
     const userInList = leaderboardData.find(user => user.id === currentUser.id);
-    return userInList || { ...currentUser, rank: -1 }; 
+    return userInList || { ...currentUser, rank: -1 };
   }, [leaderboardData, currentUser]);
 
 
@@ -105,7 +90,7 @@ export default function LeaderboardTab() {
       <input
         type="text"
         className="form-control custom-input mb-4"
-        placeholder="Search for your username..."
+        placeholder="Search for your name..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -130,13 +115,13 @@ export default function LeaderboardTab() {
                   )}
                 </div>
                 <div className="user-info-section">
-                  <img src={user.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.username}`} alt="avatar" className="avatar-medium" />
+                  <img src={user.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.name}`} alt="avatar" className="avatar-medium" />
                   <div className="user-details">
-                    <span className="username">{user.username}</span>
-                    <span className="level">Level {user.level}</span>
+                    <span className="username">{user.name}</span>
+                    {/*<span className="level">Level {user.level}</span>  esto sirve para expresar el nivel, pero como de momento no tenemos niveles...*/}
                   </div>
                 </div>
-                <span className="xp-total">{user.xp} XP</span>
+                <span className="xp-total">{user.level} XP</span>
               </li>
             );
           })
@@ -153,9 +138,9 @@ export default function LeaderboardTab() {
                 <span className="rank-number">N/A</span> {/* O tu posición real si el backend la proporciona */}
               </div>
               <div className="user-info-section">
-                <img src={currentUserRank.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${currentUserRank.username}`} alt="avatar" className="avatar-medium" />
+                <img src={currentUserRank.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${currentUserRank.name}`} alt="avatar" className="avatar-medium" />
                 <div className="user-details">
-                  <span className="username">{currentUserRank.username} (You)</span>
+                  <span className="username">{currentUserRank.name} (You)</span>
                   <span className="level">Level {currentUserRank.level || 1}</span>
                 </div>
               </div>
