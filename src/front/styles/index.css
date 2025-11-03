@@ -44,8 +44,6 @@ body {
   /* Landing page might override background, ensure this doesn't conflict */
 }
 
-
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
 }
@@ -97,6 +95,7 @@ main {
   align-items: center;
   justify-content: center;
   text-decoration: none; /* Remove underline if used as link */
+  white-space: nowrap;
 }
 .rise-btn:disabled {
   opacity: .55;

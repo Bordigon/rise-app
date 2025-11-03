@@ -1,7 +1,14 @@
 /* Contenedor principal del Layout */
-.app-layout {
+.app-layout-private {
+  display: flex; /* flex-direction: row (por defecto) */
+  min-height: 100vh;
+}
+
+/* Layout para vistas PÚBLICAS (con navbar superior) */
+.app-layout-public {
   display: flex;
-  min-height: 100vh; /* Asegura que ocupe al menos toda la altura de la pantalla */
+  flex-direction: column; /* <-- LA SOLUCIÓN: Navbar arriba, contenido abajo */
+  min-height: 100vh;
 }
 
 /* Estilo para el área principal CUANDO NO HAY sidebar */
@@ -37,6 +44,23 @@
   padding: 0 !important;
   /* Mantenemos espacio para ExpBar si es necesario */
   padding-bottom: var(--expbar-h) !important;
+}
+
+.main-content-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Para páginas públicas (Landing) */
+.main-full-width {
+  margin-left: 0; /* Sin margen de sidebar */
+}
+
+/* Para las páginas de Login y Register, aplica el fondo oscuro */
+.auth-page-background {
+  background-color: var(--rise-dark-purple); /* O el color de fondo de tu AuthPages.css */
 }
 
 
