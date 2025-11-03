@@ -17,7 +17,7 @@ export default function PublicNavbar() {
         <Button 
           variant="primary" 
           size="md" 
-          onClick={() => navigate('/login')}
+          onClick={() => navigate('/register')}
         >
           GET STARTED
         </Button>

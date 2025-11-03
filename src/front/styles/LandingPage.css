@@ -1,84 +1,174 @@
 /* src/front/styles/LandingPage.css */
 
-/* --- Container for the Landing Page --- */
-.landing-page-container {
-    /* Uses the light background defined in index.css */
+/* --- Wrapper Principal --- */
+.public-layout-container {
     background-color: var(--rise-light-bg);
-    color: var(--rise-dark-text); /* Dark text for light background */
-    display: flex; /* Ensures flexbox properties work */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 1rem; /* Add some padding */
+    color: var(--rise-dark-text);
 }
 
-/* --- Logo --- */
-.landing-logo {
-    max-width: 400px; /* Adjust size as needed */
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1rem; /* Space below the logo */
-}
-
-/* --- Slogan --- */
-.landing-slogan {
-    color: var(--rise-secondary-text-light); /* Muted color from index.css */
-    max-width: 450px;
-    margin-bottom: 2rem; /* More space before buttons */
-}
-
-/* --- Buttons Container --- */
-.landing-buttons {
-    margin-bottom: 0; 
-}
-
-.landing-buttons-wrapper {
-    width: 100%; /* Ocupa todo el ancho */
-    display: flex; /* Usa flexbox */
-    justify-content: center; /* <-- ESTO CENTRARÁ EL DIV INTERNO */
-    margin-bottom: 2rem;
-}
-
+/* --- Sección Hero (Superior y Cierre) --- */
 .hero-section {
   display: flex;
-  flex-direction: column; /* Coloca el contenido verticalmente (logo, slogan, buttons) */
-  justify-content: center; /* <-- CENTRA VERTICALMENTE LOS ELEMENTOS */
-  align-items: center;    /* <-- CENTRA HORIZONTALMENTE LOS ELEMENTOS */
-  min-height: calc(100vh - 70px); /* Ocupa la altura de la ventana menos la altura del navbar (ajusta 70px si tu navbar es diferente) */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   padding: 4rem 1rem;
   background-color: var(--rise-light-bg, #f8f9fa);
-  text-align: center; /* Asegura que el texto y los elementos inline-block se centren */
+  text-align: center;
+  min-height: 90vh; /* Altura mínima para la sección hero principal */
 }
 
-/* Specific button styles are handled by .rise-btn--primary and .rise-btn--secondary-outline in index.css */
+/* Sección de cierre (más pequeña) */
+.hero-section:last-of-type {
+    min-height: 60vh;
+}
 
-/* --- Footer Section --- */
+.landing-logo {
+  /* --- TAMAÑO CORREGIDO --- */
+  width: 50%;
+  /* max-width: 300px;  Reducimos el tamaño del logo principal */
+  height: auto;
+  margin: 0 auto 1rem;
+}
+
+.landing-logo-small {
+  /* --- TAMAÑO CORREGIDO --- */
+  width: 50%;
+  max-width: 50px; /* Reducimos el fénix guiñando */
+  height: auto;
+}
+
+.landing-slogan {
+  color: var(--rise-secondary-text-light, #6c757d);
+  max-width: 450px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.landing-buttons {
+  margin-bottom: 2rem;
+}
+
+/* --- Secciones de Características --- */
+.feature-section {
+  padding: 5rem 2rem;
+  width: 100%;
+  background-color: #ffffff;
+  overflow: hidden; /* Evita que las imágenes se desborden */
+}
+
+.feature-section-alt {
+  background-color: #f7f9fa;
+}
+
+.feature-image {
+  /* --- CAMBIOS CLAVE AQUÍ --- */
+  /* 1. Usamos max-width para que sea responsivo */
+  width: 50%;
+  max-width: 360px;
+  height: auto;
+  
+  /* 2. Eliminamos el borde y sombra que simulaban un teléfono */
+  border: none;
+  box-shadow: none;
+  
+  /* 3. Mantenemos el centrado */
+  display: block;
+  margin: 0 auto;
+}
+
+
+.feature-text {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.feature-text h1.display-4 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--rise-dark-text, #2C2F33);
+}
+
+.feature-text p.fs-5 {
+  font-size: 1.25rem;
+  color: var(--rise-secondary-text-light, #6c757d);
+  line-height: 1.6;
+}
+
+/* --- Footer --- */
 .landing-footer {
-    width: 100%;
-    padding: 1rem 0;
-    margin-top: auto; /* Pushes footer to the bottom */
+  width: 100%;
+  padding: 3rem 1rem;
+  margin-top: auto;
+  background-color: #f0f2f5;
+  border-top: 1px solid #e5e5e5;
 }
 
 .footer-item-list {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap; /* Allows items to wrap on smaller screens */
-    gap: 1.5rem; /* Space between footer items (adjust as needed) */
-    color: var(--rise-gray-text); /* Subtle color for footer text */
-    font-size: 0.85rem; /* Smaller font size for footer */
-    font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .footer-item {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem; /* Space between icon/emoji and text */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
 }
 
-/* Ensure icons/emojis in the footer are aligned nicely */
-.footer-item span:first-child {
-    font-size: 1rem; /* Adjust emoji/icon size if needed */
+/* --- Responsividad --- */
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: 80vh;
+    padding: 2rem 1rem;
+  }
+  
+  .feature-text h1.display-4 {
+    font-size: 2rem;
+  }
+  
+  .feature-section {
+    padding: 3rem 1rem;
+  }
+  
+  .feature-text {
+    padding: 2rem 0.5rem;
+    text-align: center;
+  }
+  
+  .row {
+    flex-direction: column;
+  }
+  
+  .row.flex-row-reverse {
+    flex-direction: column-reverse;
+  }
+
+  .landing-logo {
+    max-width: 250px; /* Reducido para móvil */
+  }
+
+  .landing-logo-small {
+    max-width: 180px; /* Reducido para móvil */
+  }
+
+  .landing-slogan {
+    font-size: 1.1rem;
+  }
+
+  .feature-image {
+      max-width: 300px; /* Tamaño máximo para las imágenes del teléfono en móvil */
+  }
 }
