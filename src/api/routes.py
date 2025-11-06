@@ -46,7 +46,7 @@ def register():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     user = User(email=email, name=name, password=hashed_password.decode(
-        'utf-8'), is_active=True, last_day = datetime.datetime.now())
+        'utf-8'), is_active=True, last_day=datetime.datetime.now())
     db.session.add(user)
     db.session.commit()
 
@@ -419,11 +419,11 @@ def handle_gastar_embers(amount):
 @api.route('/streak', methods=['POST'])
 @jwt_required()
 def handle_put_streak():
-    data = request.get_json()
     user_id = get_jwt_identity()
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     streak_revision(user)
     user.streak = user.streak + 1
+    user.last_day = datetime.datetime.now()
     db.session.commit()
     return jsonify(msg="Ya se añadió un día más a su streak"), 200
 
