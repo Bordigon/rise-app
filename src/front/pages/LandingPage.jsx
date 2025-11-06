@@ -73,7 +73,7 @@ function LandingPage() {
                             <div className="feature-text">
                                 <h1 className="display-4" style={{ color: 'var(--orange)' }}>Gamify your habits</h1>
                                 <p className="fs-5">
-                                    Turn your real-life goals into a game. Complete daily tasks to earn XP, watch your Phoenix eggs hatch, and keep your streak alive!
+                                    Turn your goals into a game. Complete daily tasks to earn XP, watch your Phoenix eggs hatch, and keep your streak alive!
                                 </p>
                             </div>
                         </div>
@@ -131,9 +131,7 @@ function LandingPage() {
                     </div>
 
                     <div className="landing-buttons d-grid gap-3 justify-content-center mx-auto mt-4"> 
-                        <h3>Start your ascent today!
-                        </h3>
-
+                        <h3>Start your journey today!</h3>
                         <Button 
                             size="lg" 
                             variant="primary" 

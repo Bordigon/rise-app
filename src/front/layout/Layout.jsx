@@ -26,24 +26,32 @@ export default function Layout() {
     const mainClasses = isAuthenticated
         ? `main-with-sidebar ${isProfilePage ? 'no-padding-profile' : ''}`
         : "main-full-width";
+    
+    // --- ESTA ES LA LÓGICA CLAVE ---
+    // Cambiamos la clase del layout principal
+    const layoutClass = isAuthenticated ? "app-layout-private" : "app-layout-public";
+    // --- FIN DE LA LÓGICA CLAVE ---
 
     const layoutClass = isAuthenticated ? "app-layout-private" : "app-layout-public";
 
     return (
-        <div className={layoutClass}>
+        <div className={layoutClass}> {/* <-- USA LA CLASE DINÁMICA */}
             {isAuthenticated ? (
+                // --- VISTA PRIVADA (LOGUEADO) ---
                 <>
                     <AppSidebar user={store.user} />
                     <ExpBar
-                        level={level} // <-- Pasa el nivel calculado
-                        currentExp={currentLevelExp} // <-- Pasa el XP actual del nivel
-                        nextLevelExp={expToNextLevel} // <-- Pasa el XP necesario para el nivel
+                        level={level}
+                        currentExp={currentExp}
+                        nextLevelExp={nextLevelExp}
                     />
                 </>
             ) : (
+                // --- VISTA PÚBLICA (NO LOGUEADO) ---
+                // Solo muestra el Navbar público si NO estamos en login/register
                 !isAuthPage && <PublicNavbar />
             )}
-
+            
             <main className={mainClasses}>
                 <Outlet />
             </main>
