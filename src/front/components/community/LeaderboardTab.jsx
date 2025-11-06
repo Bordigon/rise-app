@@ -3,9 +3,9 @@ import useGlobalReducer from '../../hooks/useGlobalReducer';
 import '../../styles/LeaderboardTab.css';
 
 import { getUsers } from '../../services/userService.js'
-import goldenEgg from '../../assets/img/communitypageimgs/eggmedals/golden-egg.png';
-import silverEgg from '../../assets/img/communitypageimgs/eggmedals/silver-egg.png';
-import bronzeEgg from '../../assets/img/communitypageimgs/eggmedals/bronze-egg.png';
+import goldenEgg from '../../assets/img/communitypageimgs/golden-egg.webp';
+import silverEgg from '../../assets/img/communitypageimgs/silver-egg.webp';
+import bronzeEgg from '../../assets/img/communitypageimgs/bronze-egg.webp';
 
 // URL base de la API (asumiendo que la obtienes de las variables de entorno)
 // const API_URL = import.meta.env.VITE_BACKEND_URL;
@@ -19,25 +19,6 @@ export default function LeaderboardTab() {
   const currentUser = store.user;
   const token = store.token;
 
-  /*
-    const MOCK_LEADERBOARD = [
-      { id: 10, username: "PhoenixKing", level: 15, xp: 15000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
-      { id: 12, username: "HabitQueen", level: 14, xp: 14200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
-      { id: 2,  username: "RiseUser", level: 12, xp: 12100, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=RiseUser` },
-      { id: 1,  username: "PhoenixPlayer", level: 5, xp: 7500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixPlayer` }, // Simula tu usuario
-      { id: 8,  username: "StreakMaster", level: 4, xp: 4300, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=StreakMaster` },
-      { id: 5,  username: "GoalSetter", level: 1, xp: 1000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=GoalSetter` },
-      { id: 11, username: "MindfulMona", level: 3, xp: 3500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=MindfulMona` },
-      { id: 13, username: "BodyBuilderBob", level: 7, xp: 8200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=BodyBuilderBob` },
-      { id: 14, username: "CreativeCat", level: 9, xp: 9800, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=CreativeCat` },
-      { id: 15, username: "SocialButterfly", level: 6, xp: 6000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=SocialButterfly` },
-      { id: 16, username: "ProductivePanda", level: 10, xp: 10500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ProductivePanda` },
-      { id: 17, username: "ZenZebra", level: 2, xp: 2000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ZenZebra` },
-      { id: 18, username: "ExplorerElf", level: 8, xp: 9000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ExplorerElf` },
-      { id: 19, username: "DreamerDragon", level: 11, xp: 11500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=DreamerDragon` },
-      { id: 20, username: "LearnerLion", level: 13, xp: 13000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
-    ].sort((a, b) => b.xp - a.xp).map((user, index) => ({ ...user, rank: index + 1 })); // Asignar rank después de ordenar
-*/
   const handleGetData = async () => {
     const data = await getUsers();
     console.log(data)

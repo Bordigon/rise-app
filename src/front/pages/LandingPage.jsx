@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png';
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.webp';
 import Button from '../components/commons/Button.jsx';
 import "../styles/LandingPage.css";
 import "../styles/PublicNavbar.css"; // Asegúrate de importar el CSS del Navbar
@@ -12,7 +12,7 @@ import PublicNavbar from '../components/PublicNavbar.jsx';
 import featureImageTasks from '../assets/img/publicpagesimgs/featureImageTasks.png'; 
 import featureImageProfile from '../assets/img/publicpagesimgs/featureImageProfile.png'; 
 import featureImageCommunity from '../assets/img/publicpagesimgs/featureImageCommunity.png'; 
-import winkingPhoenix from '../assets/img/publicpagesimgs/winkingPhoenix.png'; 
+import winkingPhoenix from '../assets/img/publicpagesimgs/winkingPhoenix.webp'; 
 
 
 function LandingPage() {
@@ -73,7 +73,7 @@ function LandingPage() {
                             <div className="feature-text">
                                 <h1 className="display-4" style={{ color: 'var(--orange)' }}>Gamify your habits</h1>
                                 <p className="fs-5">
-                                    Turn your goals into a game. Complete daily tasks to earn XP, watch your Phoenix eggs hatch, and keep your streak alive!
+                                    Turn your real-life goals into a game. Complete daily tasks to earn XP, watch your Phoenix eggs hatch, and keep your streak alive!
                                 </p>
                             </div>
                         </div>
@@ -131,7 +131,9 @@ function LandingPage() {
                     </div>
 
                     <div className="landing-buttons d-grid gap-3 justify-content-center mx-auto mt-4"> 
-                        <h3>Start your journey today!</h3>
+                        <h3>Start your ascent today!
+                        </h3>
+
                         <Button 
                             size="lg" 
                             variant="primary" 

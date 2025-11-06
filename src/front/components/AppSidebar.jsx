@@ -4,7 +4,8 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/AppSidebar.css";
 import { calculateLevelData } from "../utils/levelUtils.js";
 
-import fireLogo from "../assets/img/appsidebarimgs/fireLogo.png";
+import fireLogo from "../assets/img/appsidebarimgs/fireLogo.webp";
+import embersLogo from "../assets/img/appsidebarimgs/embers.webp";
 import storeReducer from "../store";
 
 export default function AppSidebar({ user }) {
@@ -79,8 +80,13 @@ export default function AppSidebar({ user }) {
           <small>days</small>
         </div>
 
-        <button className="brasas-btn" type="button">
-          {phoenixEmbers} Embers 🔥
+        <button 
+          className="embers-btn" 
+          type="button"
+        >
+          {/* La imagen va DENTRO del botón */}
+          <img src={embersLogo} alt="Embers" className="embers-icon" /> 
+          {phoenixEmbers} Embers
         </button>
 
         <button 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/PublicNavbar.css';
-import phoenixHappy from "../assets/img/dashboardpageimgs/phoenix-happy.png";
+import phoenixHappy from "../assets/img/dashboardpageimgs/phoenix-happy.webp";
 import Button from '../components/commons/Button.jsx';
 
 export default function PublicNavbar() {

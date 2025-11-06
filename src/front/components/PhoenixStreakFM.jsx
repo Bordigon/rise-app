@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import phoenixSad from "../assets/img/dashboardpageimgs/phoenix-sad.png";
-import phoenixHappy from "../assets/img/dashboardpageimgs/phoenix-happy.png";
+import phoenixSad from "../assets/img/dashboardpageimgs/phoenix-sad.webp";
+import phoenixHappy from "../assets/img/dashboardpageimgs/phoenix-happy.webp";
 
 export default function PhoenixStreakFM({
   completed,
@@ -20,7 +20,7 @@ export default function PhoenixStreakFM({
 
   const dur = 1.15;
   const ringSize = size * 0.68;
-  const ringY = size * 0.74; 
+  const ringY = size * 0.74;
   const ringX = size * 0.5;
 
   return (
