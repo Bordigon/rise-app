@@ -3,7 +3,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Task, Type_Stat
+from api.models import db, User, Task, Type_Stat, Follower
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select, and_, or_, desc
@@ -315,6 +315,55 @@ def handle_task_delete(task_id):
         db.session.commit()
         return jsonify(msg="task deleted"), 200
     return jsonify(msg="bad request")
+
+# --------------------------------- Devuelve lista de users a los que sigue el usuario
+@api.route('/follower', methods=['GET'])
+@jwt_required()
+def handle_get_followers():
+    user_id = get_jwt_identity()
+    print(user_id)
+    followers = db.session.execute(select(Follower).where(
+        Follower.user_that_follows_id == user_id)).scalars().all()
+    followers_list = []
+    result = (Follower.serialize(followers))
+    return jsonify(result)
+
+
+# -------------- Añade un nuevo usuario a la lista de followers, mediante la id de dicho usuario
+@api.route('/follower/<int:follows_id>', methods=['POST'])
+@jwt_required()
+def handle_add_follower(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is not None:
+        return jsonify(msg="ya sigues a este usuario"), 400
+    Follower().add_follower(user_id, follows_id)
+    return jsonify(msg="follower registrado"), 200
+
+
+# --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
+@api.route('/follower/<int:follows_id>', methods = ['DELETE'])
+@jwt_required()
+def handle_erase_follower(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is None:
+        return jsonify(msg="no sigues a ese usuario"), 400
+    Follower().delete_follower(yaEsFollower)
+    return jsonify(msg="ya no sigues a ese usuario"), 200
+
+# ------------------------- Para añadir embers
+@api.route('/embers/<int:amount>', methods = ['POST'])
+@jwt_required()
+def handle_add_embers(amount):
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    user.embers = user.embers + amount
+    db.session.commit()
+    return jsonify(msg = "se añadieron los embers"), 200
+
 
 
 # --------------------------- Solo durante el desarrollo
