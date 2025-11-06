@@ -5,7 +5,7 @@ export default function ExpBar({ level = 1, currentExp = 0, nextLevelExp = 1000 
   const pct = useMemo(
     () => Math.max(0, Math.min(100, (currentExp / nextLevelExp) * 100)),
     [currentExp, nextLevelExp]
-  );
+  ); 
 
   return (
     <div className="expbar-wrap">

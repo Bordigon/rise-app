@@ -2,19 +2,23 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/AppSidebar.css";
+import { calculateLevelData } from "../utils/levelUtils.js";
 
 import fireLogo from "../assets/img/appsidebarimgs/fireLogo.png";
+import storeReducer from "../store";
 
 export default function AppSidebar({ user }) {
-  const { dispatch } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const navigate = useNavigate();
+  const { level, currentLevelExp, expToNextLevel } = calculateLevelData(store.user.level || 0); 
+  
 
   const {
-    username = "PhoenixPlayer",
-    level = 1,
+    username = store.user.name,
+    levelTotal = level, 
     phoenixEmbers = 0,
     currentStreak = 0,
-    avatar,
+    avatar = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${store.user.name}`
   } = user || {};
 
   const handleLogout = () => {
@@ -36,7 +40,7 @@ export default function AppSidebar({ user }) {
         </div>
         <div className="sidebar-user">
           <h2 className="sidebar-username">{username}</h2>
-          <p className="sidebar-level">Level {level}</p>
+          <p className="sidebar-level">Level {levelTotal}</p>
         </div>
       </div>
 

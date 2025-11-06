@@ -79,8 +79,8 @@ function DashboardPage() {
   const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
 
   //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
-  const handleAddTask = async (taskName, habit) => {
-    const data = await taskCreate(taskName, null, null, habit)
+  const handleAddTask = async (list) => {
+    const data = await taskCreate(list['description'], null, null, list['habit']);
     await dispatch({ type: "ADD_TASK", payload: { ...data } });
     setUsingDefaultTasks(0);
   };

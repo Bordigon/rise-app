@@ -131,7 +131,7 @@ function DailyTasksModal({
               type="checkbox" 
               id="isHabitCheck"
               checked={isHabit}
-              onChange={(e) => setIsHabit(e.target.checked)}
+              onChange={(e) => setIsHabit(true)}
             />
             <label className="form-check-label" htmlFor="isHabitCheck">
               Habit: This task will be repeated daily. 
