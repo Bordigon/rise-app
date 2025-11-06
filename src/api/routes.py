@@ -317,6 +317,8 @@ def handle_task_delete(task_id):
     return jsonify(msg="bad request")
 
 # --------------------------------- Devuelve lista de users a los que sigue el usuario
+
+
 @api.route('/follower', methods=['GET'])
 @jwt_required()
 def handle_get_followers():
@@ -343,7 +345,7 @@ def handle_add_follower(follows_id):
 
 
 # --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
-@api.route('/follower/<int:follows_id>', methods = ['DELETE'])
+@api.route('/follower/<int:follows_id>', methods=['DELETE'])
 @jwt_required()
 def handle_erase_follower(follows_id):
     user_id = get_jwt_identity()
@@ -355,21 +357,37 @@ def handle_erase_follower(follows_id):
     return jsonify(msg="ya no sigues a ese usuario"), 200
 
 # ------------------------- Para añadir embers
-@api.route('/embers/<int:amount>', methods = ['POST'])
+
+
+@api.route('/embers/<int:amount>', methods=['POST'])
 @jwt_required()
 def handle_add_embers(amount):
     user_id = get_jwt_identity()
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     user.embers = user.embers + amount
     db.session.commit()
-    return jsonify(msg = "se añadieron los embers"), 200
+    return jsonify(msg="se añadieron los embers"), 200
 
 
+# --------------------- Para gastar los embers
+@api.route('/embers/gastar/<int:amount>', methods=['POST'])
+@jwt_required()
+def handle_gastar_embers(amount):
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    if user.embers < amount:
+        return jsonify(msg="No tienes suficientes embers para esta acción"), 400
+    user.embers = user.embers - amount
+    new_amount = user.embers
+    db.session.commit()
+    return jsonify(msg="Te quedan " + str(new_amount)), 200
 
 # --------------------------- Solo durante el desarrollo
 # ------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------
 # ------------------------------------------ get usuarios solo mientras se trabaje en el desarrollo
+
+
 @api.route('/users', methods=['GET'])
 def handle_get_all_users():
     users = db.session.execute(select(User)).scalars().all()
