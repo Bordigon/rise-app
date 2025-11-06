@@ -2,6 +2,7 @@
 import click
 from api.models import db, User
 import bcrypt
+import datetime
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -31,6 +32,7 @@ def setup_commands(app):
             user.password = hashed_password.decode(
                 'utf-8')
             user.is_active = True
+            user.last_day = datetime.datetime.now()
             db.session.add(user)
             db.session.commit()
             print("User: ", user.email, " created.")

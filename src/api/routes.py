@@ -46,7 +46,7 @@ def register():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     user = User(email=email, name=name, password=hashed_password.decode(
-        'utf-8'), is_active=True)
+        'utf-8'), is_active=True, last_day = datetime.datetime.now())
     db.session.add(user)
     db.session.commit()
 
@@ -57,10 +57,9 @@ def register():
 def streak_revision(user):
     hoy = datetime.datetime.now()
     diff = hoy - user.last_day
-    if diff.days>2:
+    if diff.days > 2:
         user.streak = 0
         db.session.commit()
-    
 
 
 # ----------------------- /login, Inicio de sesión, devuelve el token, un refresh token y el usuario
@@ -327,32 +326,55 @@ def handle_task_delete(task_id):
         return jsonify(msg="task deleted"), 200
     return jsonify(msg="bad request")
 
+
 # --------------------------------- Devuelve lista de users a los que sigue el usuario
+@api.route('/following', methods=['GET'])
+@jwt_required()
+def handle_get_followings():
+    user_id = get_jwt_identity()
+    print(user_id)
+    followers = db.session.execute(select(Follower).where(
+        Follower.user_that_follows_id == user_id)).scalars().all()
+    result = (Follower.serialize(followers))
+    return jsonify(result)
 
 
+# -------------- Añade un nuevo usuario a la lista de followers, mediante la id de dicho usuario
+@api.route('/following/<int:follows_id>', methods=['POST'])
+@jwt_required()
+def handle_add_following(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is not None:
+        return jsonify(msg="ya sigues a este usuario"), 400
+    Follower().add_following(user_id, follows_id)
+    return jsonify(msg="following registrado"), 200
+
+
+# --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
+@api.route('/following/<int:follows_id>', methods=['DELETE'])
+@jwt_required()
+def handle_erase_following(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is None:
+        return jsonify(msg="no sigues a ese usuario"), 400
+    Follower().delete_following(yaEsFollower)
+    return jsonify(msg="ya no sigues a ese usuario"), 200
+
+
+# --------------------------------- Devuelve lista de users a los que sigue el usuario
 @api.route('/follower', methods=['GET'])
 @jwt_required()
 def handle_get_followers():
     user_id = get_jwt_identity()
     print(user_id)
     followers = db.session.execute(select(Follower).where(
-        Follower.user_that_follows_id == user_id)).scalars().all()
-    followers_list = []
-    result = (Follower.serialize(followers))
+        Follower.user_followed_id == user_id)).scalars().all()
+    result = (Follower.followers(followers))
     return jsonify(result)
-
-
-# -------------- Añade un nuevo usuario a la lista de followers, mediante la id de dicho usuario
-@api.route('/follower/<int:follows_id>', methods=['POST'])
-@jwt_required()
-def handle_add_follower(follows_id):
-    user_id = get_jwt_identity()
-    yaEsFollower = db.session.execute(select(Follower).where(and_(
-        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
-    if yaEsFollower is not None:
-        return jsonify(msg="ya sigues a este usuario"), 400
-    Follower().add_follower(user_id, follows_id)
-    return jsonify(msg="follower registrado"), 200
 
 
 # --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
@@ -361,15 +383,14 @@ def handle_add_follower(follows_id):
 def handle_erase_follower(follows_id):
     user_id = get_jwt_identity()
     yaEsFollower = db.session.execute(select(Follower).where(and_(
-        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+        Follower.user_that_follows_id == follows_id, Follower.user_followed_id == user_id))).scalar()
     if yaEsFollower is None:
-        return jsonify(msg="no sigues a ese usuario"), 400
-    Follower().delete_follower(yaEsFollower)
-    return jsonify(msg="ya no sigues a ese usuario"), 200
+        return jsonify(msg="ese usuario no te sigue"), 400
+    Follower().delete_following(yaEsFollower)
+    return jsonify(msg="ya no te sigue ese usuario"), 200
+
 
 # ------------------------- Para añadir embers
-
-
 @api.route('/embers/<int:amount>', methods=['POST'])
 @jwt_required()
 def handle_add_embers(amount):
@@ -395,7 +416,7 @@ def handle_gastar_embers(amount):
 
 
 # -------------------------- Para aumentar el streak, no necesita nada
-@api.route('/streak', methods = ['POST'])
+@api.route('/streak', methods=['POST'])
 @jwt_required()
 def handle_put_streak():
     data = request.get_json()
@@ -404,7 +425,7 @@ def handle_put_streak():
     streak_revision(user)
     user.streak = user.streak + 1
     db.session.commit()
-    return jsonify(msg = "Ya se añadió un día más a su streak"), 200
+    return jsonify(msg="Ya se añadió un día más a su streak"), 200
 
 
 # --------------------------- Solo durante el desarrollo

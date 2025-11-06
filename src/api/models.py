@@ -125,14 +125,22 @@ class Follower(db.Model):
                 User.id == x.user_followed_id)).scalar()
             result.append(user.serialize())
         return result
+    
+    def followers(self):
+        result = []
+        for x in self:
+            user = db.session.execute(select(User).where(
+                User.id == x.user_that_follows_id)).scalar()
+            result.append(user.serialize())
+        return result
 
-    def add_follower(jwt, following_id, followed_id):
+    def add_following(jwt, following_id, followed_id):
         follower = Follower()
         follower.user_that_follows_id = following_id
         follower.user_followed_id = followed_id
         db.session.add(follower)
         db.session.commit()
 
-    def delete_follower(jwt, follower_delete):
+    def delete_following(jwt, follower_delete):
         db.session.delete(follower_delete)
         db.session.commit()
