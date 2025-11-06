@@ -53,6 +53,16 @@ def register():
     return jsonify(user.serialize()), 201
 
 
+# ---------------------------- maneja caducidad del streak
+def streak_revision(user):
+    hoy = datetime.datetime.now()
+    diff = hoy - user.last_day
+    if diff.days>2:
+        user.streak = 0
+        db.session.commit()
+    
+
+
 # ----------------------- /login, Inicio de sesión, devuelve el token, un refresh token y el usuario
 # request body
 # {
@@ -70,6 +80,7 @@ def login():
         return jsonify({"msg": "Bad username or password"}), 401
 
     # ---------- crea los access y refresh tokens, recordar que NO tienen JWT_KEY aun
+    streak_revision(user)
     access_token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))
     return jsonify(token=access_token, refresh_token=refresh_token, user=user.serialize()), 200
@@ -113,7 +124,7 @@ def profile():
         User.id == current_user_id)).scalar()
     if user is None:
         return jsonify({"msg": "User not found"}), 404
-
+    streak_revision(user)
     return jsonify(user.serialize()), 200
 
 
@@ -381,6 +392,20 @@ def handle_gastar_embers(amount):
     new_amount = user.embers
     db.session.commit()
     return jsonify(msg="Te quedan " + str(new_amount)), 200
+
+
+# -------------------------- Para aumentar el streak, no necesita nada
+@api.route('/streak', methods = ['POST'])
+@jwt_required()
+def handle_put_streak():
+    data = request.get_json()
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    streak_revision(user)
+    user.streak = user.streak + 1
+    db.session.commit()
+    return jsonify(msg = "Ya se añadió un día más a su streak"), 200
+
 
 # --------------------------- Solo durante el desarrollo
 # ------------------------------------------------------------------------------------------------

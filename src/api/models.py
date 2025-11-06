@@ -28,6 +28,8 @@ class User(db.Model):
     level: Mapped[int] = mapped_column(default=0)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=True)
     embers: Mapped[int] = mapped_column(default=0)
+    streak: Mapped[int] = mapped_column(default=0)
+    last_day: Mapped[datetime] = mapped_column(nullable=True)
 
     # ---------------------------- stats
     body: Mapped[int] = mapped_column(default=0)
@@ -50,6 +52,8 @@ class User(db.Model):
             "name": self.name,
             "age": self.age,
             "embers": self.embers,
+            "streak": self.streak,
+            "last_day": self.last_day,
             "country_city": self.country_city,
             "level": self.level,
             "body": self.body,
