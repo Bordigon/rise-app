@@ -3,7 +3,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Task, Type_Stat
+from api.models import db, User, Task, Type_Stat, Follower
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy import select, and_, or_, desc
@@ -46,11 +46,20 @@ def register():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     user = User(email=email, name=name, password=hashed_password.decode(
-        'utf-8'), is_active=True)
+        'utf-8'), is_active=True, last_day=datetime.datetime.now())
     db.session.add(user)
     db.session.commit()
 
     return jsonify(user.serialize()), 201
+
+
+# ---------------------------- maneja caducidad del streak
+def streak_revision(user):
+    hoy = datetime.datetime.now()
+    diff = hoy - user.last_day
+    if diff.days > 2:
+        user.streak = 0
+        db.session.commit()
 
 
 # ----------------------- /login, Inicio de sesión, devuelve el token, un refresh token y el usuario
@@ -70,6 +79,7 @@ def login():
         return jsonify({"msg": "Bad username or password"}), 401
 
     # ---------- crea los access y refresh tokens, recordar que NO tienen JWT_KEY aun
+    streak_revision(user)
     access_token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))
     return jsonify(token=access_token, refresh_token=refresh_token, user=user.serialize()), 200
@@ -113,7 +123,7 @@ def profile():
         User.id == current_user_id)).scalar()
     if user is None:
         return jsonify({"msg": "User not found"}), 404
-
+    streak_revision(user)
     return jsonify(user.serialize()), 200
 
 
@@ -317,10 +327,113 @@ def handle_task_delete(task_id):
     return jsonify(msg="bad request")
 
 
+# --------------------------------- Devuelve lista de users a los que sigue el usuario
+@api.route('/following', methods=['GET'])
+@jwt_required()
+def handle_get_followings():
+    user_id = get_jwt_identity()
+    print(user_id)
+    followers = db.session.execute(select(Follower).where(
+        Follower.user_that_follows_id == user_id)).scalars().all()
+    result = (Follower.serialize(followers))
+    return jsonify(result)
+
+
+# -------------- Añade un nuevo usuario a la lista de followers, mediante la id de dicho usuario
+@api.route('/following/<int:follows_id>', methods=['POST'])
+@jwt_required()
+def handle_add_following(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is not None:
+        return jsonify(msg="ya sigues a este usuario"), 400
+    Follower().add_following(user_id, follows_id)
+    return jsonify(msg="following registrado"), 200
+
+
+# --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
+@api.route('/following/<int:follows_id>', methods=['DELETE'])
+@jwt_required()
+def handle_erase_following(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == user_id, Follower.user_followed_id == follows_id))).scalar()
+    if yaEsFollower is None:
+        return jsonify(msg="no sigues a ese usuario"), 400
+    Follower().delete_following(yaEsFollower)
+    return jsonify(msg="ya no sigues a ese usuario"), 200
+
+
+# --------------------------------- Devuelve lista de users a los que sigue el usuario
+@api.route('/follower', methods=['GET'])
+@jwt_required()
+def handle_get_followers():
+    user_id = get_jwt_identity()
+    print(user_id)
+    followers = db.session.execute(select(Follower).where(
+        Follower.user_followed_id == user_id)).scalars().all()
+    result = (Follower.followers(followers))
+    return jsonify(result)
+
+
+# --------------------- Para dejar de seguir a un usuario, basta con la id del usuario
+@api.route('/follower/<int:follows_id>', methods=['DELETE'])
+@jwt_required()
+def handle_erase_follower(follows_id):
+    user_id = get_jwt_identity()
+    yaEsFollower = db.session.execute(select(Follower).where(and_(
+        Follower.user_that_follows_id == follows_id, Follower.user_followed_id == user_id))).scalar()
+    if yaEsFollower is None:
+        return jsonify(msg="ese usuario no te sigue"), 400
+    Follower().delete_following(yaEsFollower)
+    return jsonify(msg="ya no te sigue ese usuario"), 200
+
+
+# ------------------------- Para añadir embers
+@api.route('/embers/<int:amount>', methods=['POST'])
+@jwt_required()
+def handle_add_embers(amount):
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    user.embers = user.embers + amount
+    db.session.commit()
+    return jsonify(msg="se añadieron los embers"), 200
+
+
+# --------------------- Para gastar los embers
+@api.route('/embers/gastar/<int:amount>', methods=['POST'])
+@jwt_required()
+def handle_gastar_embers(amount):
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    if user.embers < amount:
+        return jsonify(msg="No tienes suficientes embers para esta acción"), 400
+    user.embers = user.embers - amount
+    new_amount = user.embers
+    db.session.commit()
+    return jsonify(msg="Te quedan " + str(new_amount)), 200
+
+
+# -------------------------- Para aumentar el streak, no necesita nada
+@api.route('/streak', methods=['POST'])
+@jwt_required()
+def handle_put_streak():
+    user_id = get_jwt_identity()
+    user = db.session.execute(select(User).where(User.id == user_id)).scalar()
+    streak_revision(user)
+    user.streak = user.streak + 1
+    user.last_day = datetime.datetime.now()
+    db.session.commit()
+    return jsonify(msg="Ya se añadió un día más a su streak"), 200
+
+
 # --------------------------- Solo durante el desarrollo
 # ------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------
 # ------------------------------------------ get usuarios solo mientras se trabaje en el desarrollo
+
+
 @api.route('/users', methods=['GET'])
 def handle_get_all_users():
     users = db.session.execute(select(User)).scalars().all()

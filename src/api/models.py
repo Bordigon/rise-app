@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, ForeignKey, Enum
+from sqlalchemy import String, Boolean, ForeignKey, Enum, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
 import enum
 from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 db = SQLAlchemy()
 
@@ -26,6 +27,9 @@ class User(db.Model):
     country_city: Mapped[str] = mapped_column(String(280), nullable=True)
     level: Mapped[int] = mapped_column(default=0)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=True)
+    embers: Mapped[int] = mapped_column(default=0)
+    streak: Mapped[int] = mapped_column(default=0)
+    last_day: Mapped[datetime] = mapped_column(nullable=True)
 
     # ---------------------------- stats
     body: Mapped[int] = mapped_column(default=0)
@@ -36,6 +40,10 @@ class User(db.Model):
 
     # ---------------------------- relationships
     task_list: Mapped[List["Task"]] = relationship(back_populates="user")
+    following: Mapped[List["Follower"]] = relationship(
+        back_populates="user_following", foreign_keys="[Follower.user_that_follows_id]")
+    followed: Mapped[List["Follower"]] = relationship(
+        back_populates="user_followed", foreign_keys="[Follower.user_followed_id]")
 
     def serialize(self):
         return {
@@ -43,6 +51,9 @@ class User(db.Model):
             "email": self.email,
             "name": self.name,
             "age": self.age,
+            "embers": self.embers,
+            "streak": self.streak,
+            "last_day": self.last_day,
             "country_city": self.country_city,
             "level": self.level,
             "body": self.body,
@@ -92,3 +103,44 @@ class Task(db.Model):
             "creativity": self.creativity,
             "social": self.social
         }
+
+
+class Follower(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_followed_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id"), nullable=False)
+    user_that_follows_id: Mapped[int] = mapped_column(
+        ForeignKey("user.id"), nullable=False)
+
+    # ------------------------------ relationship
+    user_followed: Mapped["User"] = relationship(
+        back_populates="followed", foreign_keys=[user_followed_id])
+    user_following: Mapped["User"] = relationship(
+        back_populates="following", foreign_keys=[user_that_follows_id])
+
+    def serialize(self):
+        result = []
+        for x in self:
+            user = db.session.execute(select(User).where(
+                User.id == x.user_followed_id)).scalar()
+            result.append(user.serialize())
+        return result
+    
+    def followers(self):
+        result = []
+        for x in self:
+            user = db.session.execute(select(User).where(
+                User.id == x.user_that_follows_id)).scalar()
+            result.append(user.serialize())
+        return result
+
+    def add_following(jwt, following_id, followed_id):
+        follower = Follower()
+        follower.user_that_follows_id = following_id
+        follower.user_followed_id = followed_id
+        db.session.add(follower)
+        db.session.commit()
+
+    def delete_following(jwt, follower_delete):
+        db.session.delete(follower_delete)
+        db.session.commit()
