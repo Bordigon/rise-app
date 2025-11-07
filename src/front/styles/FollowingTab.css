@@ -1,0 +1,54 @@
+.follow-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 1rem;
+  min-width: 90px;
+  justify-content: flex-end;
+}
+
+.follow-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #2b6bff;
+  color: #fff;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(43, 107, 255, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  cursor: pointer;
+}
+
+.follow-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(43, 107, 255, 0.45);
+  background: #316fff;
+}
+
+.follow-btn:active {
+  transform: translateY(0);
+}
+
+.following-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(120, 255, 180, 0.15);
+  color: #c8ffe7;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1px solid rgba(120, 255, 180, 0.25);
+  white-space: nowrap;
+}
+
+.following-pill.me {
+  background: rgba(200, 200, 255, 0.18);
+  color: #e6e6ff;
+  border-color: rgba(200, 200, 255, 0.25);
+}

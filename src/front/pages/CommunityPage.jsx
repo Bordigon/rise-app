@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 // Importa los nuevos componentes de pestañas
 import LeaderboardTab from '../components/community/LeaderboardTab.jsx';
-import AddFriendsTab from '../components/community/AddFriendsTab.jsx';
+import FollowingTab from '../components/community/FollowingTab.jsx';
+import FollowersTab from '../components/community/FollowersTab.jsx';
 
 function CommunityPage() {
   const [key, setKey] = useState('leaderboard');
@@ -21,7 +22,10 @@ function CommunityPage() {
             <Nav.Link eventKey="leaderboard">Leaderboard</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link eventKey="add-friends">Add Friends</Nav.Link>
+            <Nav.Link eventKey="following">Following</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="followers">Followers</Nav.Link>
           </Nav.Item>
         </Nav>
         
@@ -29,8 +33,11 @@ function CommunityPage() {
           <Tab.Pane eventKey="leaderboard" unmountOnExit>
             <LeaderboardTab />
           </Tab.Pane>
-          <Tab.Pane eventKey="add-friends" unmountOnExit>
-            <AddFriendsTab />
+          <Tab.Pane eventKey="following" unmountOnExit>
+            <FollowingTab />
+          </Tab.Pane>
+          <Tab.Pane eventKey="followers" unmountOnExit>
+            <FollowersTab />
           </Tab.Pane>
         </Tab.Content>
       </Tab.Container>

@@ -1,0 +1,7 @@
+/* Reutiliza LeaderboardTab.css para la mayor parte del look.
+   Aquí solo dejamos un pequeño “spacer” a la derecha para alinear la grilla. */
+
+.followers-right-spacer {
+  width: 90px;      /* mismo ancho aproximado que la columna de acciones en Following */
+  min-width: 90px;
+}
