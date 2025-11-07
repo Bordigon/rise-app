@@ -96,6 +96,14 @@ export default function AppSidebar({ user }) {
 
           Logout
         </button>
+
+        <button 
+          type="button" 
+          className="btn btn-danger"
+          onClick={handleLogout}>
+
+          Logout
+        </button>
       </div>
     </nav>
   );
