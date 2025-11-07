@@ -3,7 +3,6 @@ import '../../styles/CommunityPage.css';
 import { Tab, Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
-// Importa los nuevos componentes de pestañas
 import LeaderboardTab from '../components/community/LeaderboardTab.jsx';
 import AddFriendsTab from '../components/community/AddFriendsTab.jsx';
 

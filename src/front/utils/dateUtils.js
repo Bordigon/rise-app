@@ -58,4 +58,4 @@ export const fmtDay = (date) =>
  * @param {Date} date - La fecha.
  * @returns {string} La letra del día ('D', 'L', 'M', 'X', 'J', 'V', 'S').
  */
-export const dayLetter = (date) => ["D", "L", "M", "X", "J", "V", "S"][date.getDay()]; 
+export const dayLetter = (date) => ["S", "M", "T", "W", "R", "F", "S"][date.getDay()]; 
