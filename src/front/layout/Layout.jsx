@@ -26,10 +26,9 @@ export default function Layout() {
     const mainClasses = isAuthenticated
         ? `main-with-sidebar ${isProfilePage ? 'no-padding-profile' : ''}`
         : "main-full-width";
-    
+
     // --- ESTA ES LA LÓGICA CLAVE ---
     // Cambiamos la clase del layout principal
-    const layoutClass = isAuthenticated ? "app-layout-private" : "app-layout-public";
     // --- FIN DE LA LÓGICA CLAVE ---
 
     const layoutClass = isAuthenticated ? "app-layout-private" : "app-layout-public";
@@ -42,8 +41,8 @@ export default function Layout() {
                     <AppSidebar user={store.user} />
                     <ExpBar
                         level={level}
-                        currentExp={currentExp}
-                        nextLevelExp={nextLevelExp}
+                        currentExp={currentLevelExp}
+                        nextLevelExp={expToNextLevel}
                     />
                 </>
             ) : (
@@ -51,7 +50,7 @@ export default function Layout() {
                 // Solo muestra el Navbar público si NO estamos en login/register
                 !isAuthPage && <PublicNavbar />
             )}
-            
+
             <main className={mainClasses}>
                 <Outlet />
             </main>

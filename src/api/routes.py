@@ -336,7 +336,8 @@ def handle_get_followings():
     followers = db.session.execute(select(Follower).where(
         Follower.user_that_follows_id == user_id)).scalars().all()
     result = (Follower.serialize(followers))
-    return jsonify(result)
+    print(result)
+    return jsonify(result), 200
 
 
 # -------------- Añade un nuevo usuario a la lista de followers, mediante la id de dicho usuario

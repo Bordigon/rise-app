@@ -2,17 +2,18 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import "../../styles/LeaderboardTab.css";
 import "../../styles/FollowersTab.css";
+import { followersGet } from "../../services/followerService";
 
 /* ===== Cuando conectes backend, descomenta e integra ===== */
 // import { getFollowers } from "../../services/userService.js"; 
 //   // getFollowers(userId) => devuelve array de usuarios [{ id, username, avatar, ... }]
 
 /* Toggle mock/backend */
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export default function FollowersTab() {
   const { store } = useGlobalReducer();
-  const currentUser = store.user || { id: 1, username: "PhoenixPlayer" };
+  const currentUser = store.user || { id: 1, name: "PhoenixPlayer" };
 
   const [allFollowers, setAllFollowers] = useState([]); // solo gente que te sigue
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,21 +27,21 @@ export default function FollowersTab() {
   const loadMock = async () => {
     // Mismo mock base que venimos usando
     const MOCK_LEADERBOARD = [
-      { id: 10, username: "PhoenixKing",   avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
-      { id: 12, username: "HabitQueen",    avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
-      { id: 2,  username: "RiseUser",      avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=RiseUser` },
-      { id: 1,  username: "PhoenixPlayer", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixPlayer` },
-      { id: 8,  username: "StreakMaster",  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=StreakMaster` },
-      { id: 5,  username: "GoalSetter",    avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=GoalSetter` },
-      { id: 11, username: "MindfulMona",   avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=MindfulMona` },
-      { id: 13, username: "BodyBuilderBob",avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=BodyBuilderBob` },
-      { id: 14, username: "CreativeCat",   avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=CreativeCat` },
-      { id: 15, username: "SocialButterfly",avatar:`https://api.dicebear.com/7.x/pixel-art/svg?seed=SocialButterfly` },
-      { id: 16, username: "ProductivePanda",avatar:`https://api.dicebear.com/7.x/pixel-art/svg?seed=ProductivePanda` },
-      { id: 17, username: "ZenZebra",      avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ZenZebra` },
-      { id: 18, username: "ExplorerElf",   avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ExplorerElf` },
+      { id: 10, username: "PhoenixKing", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
+      { id: 12, username: "HabitQueen", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
+      { id: 2, username: "RiseUser", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=RiseUser` },
+      { id: 1, username: "PhoenixPlayer", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixPlayer` },
+      { id: 8, username: "StreakMaster", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=StreakMaster` },
+      { id: 5, username: "GoalSetter", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=GoalSetter` },
+      { id: 11, username: "MindfulMona", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=MindfulMona` },
+      { id: 13, username: "BodyBuilderBob", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=BodyBuilderBob` },
+      { id: 14, username: "CreativeCat", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=CreativeCat` },
+      { id: 15, username: "SocialButterfly", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=SocialButterfly` },
+      { id: 16, username: "ProductivePanda", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ProductivePanda` },
+      { id: 17, username: "ZenZebra", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ZenZebra` },
+      { id: 18, username: "ExplorerElf", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ExplorerElf` },
       { id: 19, username: "DreamerDragon", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=DreamerDragon` },
-      { id: 20, username: "LearnerLion",   avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
+      { id: 20, username: "LearnerLion", avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
     ];
 
     // IDs que “te siguen” (elige los que quieras del mock)
@@ -48,25 +49,25 @@ export default function FollowersTab() {
 
     const followersOnly = MOCK_LEADERBOARD
       .filter(u => MOCK_FOLLOWER_IDS.has(u.id))
-      .sort((a, b) => a.username.localeCompare(b.username));
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     setAllFollowers(followersOnly);
   };
 
-  /* ======== REAL (descomentar cuando tengas backend) ========
+  // ======== REAL (descomentar cuando tengas backend) ========
   const loadReal = async () => {
     try {
       setError(null);
-      const followers = await getFollowers(currentUser?.id); 
+      const followers = await followersGet(currentUser?.id);
       // Asegúrate de que el service ya devuelva [{ id, username, avatar, ... }]
-      const ordered = (followers || []).sort((a, b) => (a.username || "").localeCompare(b.username || ""));
+      const ordered = (followers || []).sort((a, b) => (a.name || "").localeCompare(b.name || ""));
       setAllFollowers(ordered);
     } catch (e) {
       console.error(e);
       setError(e?.message || "Failed to load followers");
     }
   };
-  ============================================================ */
+  //============================================================ 
 
   // Cargar datos
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function FollowersTab() {
       if (USE_MOCK) {
         await loadMock();
       } else {
-        /* await loadReal(); */
+        await loadReal();
       }
       t = setTimeout(() => setFetchLoading(false), 300);
     })();
@@ -88,7 +89,7 @@ export default function FollowersTab() {
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return allFollowers;
-    return allFollowers.filter(u => (u.username || "").toLowerCase().includes(q));
+    return allFollowers.filter(u => (u.name || "").toLowerCase().includes(q));
   }, [allFollowers, searchTerm]);
 
   // Precarga de avatares visibles
@@ -150,13 +151,13 @@ export default function FollowersTab() {
                 <div className="rank-section" />
                 <div className="user-info-section">
                   <img
-                    src={user.avatar}
+                    src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.name}`}
                     alt="avatar"
                     className="avatar-medium"
                     draggable="false"
                   />
                   <div className="user-details">
-                    <span className="username">{user.username}</span>
+                    <span className="username">{user.name}</span>
                   </div>
                 </div>
                 {/* No hay botones de acción en Followers */}

@@ -15,14 +15,14 @@ function Pruebas() {
         console.log("Enviando:", body);
 
         try {
-            await userRegister(body);
+            //await userRegister(body);
 
             body = {
                 "email": "gistavo@gmail.com",
                 "password": "yo soy groot"
             }
 
-            await userLogin(body);
+            //await userLogin(body);
 
             await userProfile();
 

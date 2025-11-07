@@ -11,19 +11,19 @@ import storeReducer from "../store";
 export default function AppSidebar({ user }) {
   const { store, dispatch } = useGlobalReducer();
   const navigate = useNavigate();
-  const { level, currentLevelExp, expToNextLevel } = calculateLevelData(store.user.level || 0); 
-  
+  const { level, currentLevelExp, expToNextLevel } = calculateLevelData(store.user.level || 0);
+
 
   const {
     username = store.user.name,
-    levelTotal = level, 
+    levelTotal = level,
     phoenixEmbers = 0,
     currentStreak = 0,
     avatar = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${store.user.name}`
   } = user || {};
 
   const handleLogout = () => {
-  
+
     dispatch({ type: "LOGOUT" });
     navigate("/login");
   }
@@ -80,25 +80,17 @@ export default function AppSidebar({ user }) {
           <small>days</small>
         </div>
 
-        <button 
-          className="embers-btn" 
+        <button
+          className="embers-btn"
           type="button"
         >
           {/* La imagen va DENTRO del botón */}
-          <img src={embersLogo} alt="Embers" className="embers-icon" /> 
+          <img src={embersLogo} alt="Embers" className="embers-icon" />
           {phoenixEmbers} Embers
         </button>
 
-        <button 
-          type="button" 
-          className="btn btn-danger"
-          onClick={handleLogout}>
-
-          Logout
-        </button>
-
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="btn btn-danger"
           onClick={handleLogout}>
 

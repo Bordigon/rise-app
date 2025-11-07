@@ -41,8 +41,8 @@ function DashboardPage() {
     { id: 4, description: "Planificar el día siguiente", done: false },
   ];
 
-  const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
-  if(store.tasks[0] != null){
+  const tasks = store.tasks[0] == null ? defaultTasks : store.tasks;
+  if (store.tasks[0] != null) {
     localStorage.setItem("user-tasks", JSON.stringify(tasks));
   }
 
@@ -73,7 +73,7 @@ function DashboardPage() {
     const imagesToPreload = [
       closedEggImg,
       openEggImg,
-      
+
     ];
 
     const loadAllAssets = async () => {
@@ -128,7 +128,7 @@ function DashboardPage() {
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    if (store.tasks[0]!=null) {
+    if (store.tasks[0] != null) {
       dispatch({ type: "TASK_DONE", payload: { taskId } });
       taskDone(taskId);
       const data = await userProfile();
