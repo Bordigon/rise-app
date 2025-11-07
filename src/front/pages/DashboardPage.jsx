@@ -1,4 +1,3 @@
-// src/front/pages/DashboardPage.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
@@ -12,8 +11,8 @@ import {
   dayLetter,
 } from "../utils/dateUtils.js";
 
-import closedEggImg from "../assets/img/dashboardpageimgs/closed-egg.png";
-import openEggImg from "../assets/img/dashboardpageimgs/open-egg.png";
+import closedEggImg from "../assets/img/dashboardpageimgs/closed-egg.webp";
+import openEggImg from "../assets/img/dashboardpageimgs/open-egg.webp";
 import completionSound from "../assets/audio/completionSound.mp3";
 
 import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
@@ -32,6 +31,9 @@ function DashboardPage() {
   const { store, dispatch } = useGlobalReducer();
   const [usingDefaultTasks, setUsingDefaultTasks] = useState(0);
 
+  // --- NUEVO: estado de carga global para bloquear cualquier imagen ---
+  const [isLoading, setIsLoading] = useState(true);
+
   const defaultTasks = [
     { id: 1, description: "Beber 2 litros de agua", done: false },
     { id: 2, description: "Hacer 30 min de ejercicio", done: false },
@@ -39,13 +41,11 @@ function DashboardPage() {
     { id: 4, description: "Planificar el día siguiente", done: false },
   ];
 
-  console.log(store.tasks[0] == null)
   const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
-  console.log("tasks del dispatch")
-  console.log(tasks);
   if(store.tasks[0] != null){
     localStorage.setItem("user-tasks", JSON.stringify(tasks));
   }
+
   const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
   const completedDays = store.completedDays || new Set();
 
@@ -58,6 +58,36 @@ function DashboardPage() {
   const completionAudioRef = useRef(new Audio(completionSound));
   const [celebrateTrigger, setCelebrateTrigger] = useState(0);
   const [loadingTasks, setLoadingTasks] = useState(true);
+
+  // --- NUEVO: preloader de imágenes  ---
+  useEffect(() => {
+    const preloadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+
+    // Lista de TODAS las imágenes que aparecen en este componente
+    const imagesToPreload = [
+      closedEggImg,
+      openEggImg,
+      
+    ];
+
+    const loadAllAssets = async () => {
+      try {
+        await Promise.all(imagesToPreload.map(src => preloadImage(src)));
+      } catch (e) {
+        console.error("Error preloading images in DashboardPage:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAllAssets();
+  }, []);
 
   const weekProgress = useMemo(() => {
     const todayKey = localKey(new Date());
@@ -78,7 +108,6 @@ function DashboardPage() {
   const pendingTasks = tasks.filter(task => !task.done).length;
   const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
 
-  //este es el mémtodo que debes copiar para crear un hábitdo, y cambias false, por true
   const handleAddTask = async (list) => {
     const data = await taskCreate(list['description'], null, null, list['habit']);
     await dispatch({ type: "ADD_TASK", payload: { ...data } });
@@ -107,7 +136,6 @@ function DashboardPage() {
     }
 
     if (willBeDayComplete && !isCurrentlyComplete) {
-      console.log("¡Día recién completado! Disparando efectos...");
       dispatch({ type: "MARK_DAY_COMPLETE", payload: { dayKey: todayKey } });
 
       const xpGainedToday = 50;
@@ -121,25 +149,34 @@ function DashboardPage() {
       setCelebrateTrigger(x => x + 1);
       setShowDailyTasksModal(false);
     } else if (!willBeDayComplete && isCurrentlyComplete) {
-      console.log("Día descompletado.");
       dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
     }
   };
 
   const handleDayClick = (dayData) => {
-    console.log("Opening modal for day:", dayData.day);
     setShowDailyTasksModal(true);
   };
   const handleDailyTasksButtonClick = () => {
-    console.log("Opening modal for today");
     setShowDailyTasksModal(true);
   };
 
   const goPrevWeek = () => setWeekStart((ws) => addDays(ws, -7));
   const goNextWeek = () => setWeekStart((ws) => addDays(ws, 7));
 
+  // --- NUEVO: mientras isLoading, no renderizamos NINGUNA imagen ni PhoenixStreakFM ---
+  if (isLoading) {
+    return (
+      <div className="dashboard-loading">
+        <div className="spinner-border text-light" role="status" aria-label="Loading">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="stage">
+      {/* Phoenix y resto solo aparecen cuando isLoading === false */}
       <div className="phoenix-central-container d-flex justify-content-center">
         <PhoenixStreakFM completed={isPhoenixHappy} trigger={celebrateTrigger} />
       </div>
@@ -162,6 +199,7 @@ function DashboardPage() {
         <button type="button" className="week-arrow" onClick={goPrevWeek} aria-label="Previous Week">
           &lt;
         </button>
+
         <div className="week-days-wrapper">
           {weekProgress.map((day) => (
             <div
@@ -173,16 +211,21 @@ function DashboardPage() {
               <span className={`day-letter fw-bold ${day.isToday ? "text-rise-orange" : ""}`}>
                 {day.day}
               </span>
+
+              {/* Estas imágenes solo existen cuando ya se precargaron */}
               <img
                 src={day.complete ? openEggImg : closedEggImg}
                 alt={day.complete ? "Cracked Egg" : "Closed Egg"}
                 className={`day-egg-image ${day.complete ? "open" : "closed"}`}
+                draggable="false"
               />
+
               <span className="day-date small text-muted mt-2">{day.label}</span>
               {day.isToday && <span className="today-indicator">TODAY</span>}
             </div>
           ))}
         </div>
+
         <button type="button" className="week-arrow" onClick={goNextWeek} aria-label="Next Week">
           &gt;
         </button>
@@ -206,7 +249,9 @@ function DashboardPage() {
           </h1>
         </div>
       )}
+
       {xpGainAnimation.show && <XpGainIndicator amount={xpGainAnimation.amount} />}
+
       <DailyTasksModal
         show={showDailyTasksModal}
         onClose={() => setShowDailyTasksModal(false)}

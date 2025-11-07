@@ -211,6 +211,17 @@
   font-size: 0.85rem;
 }
 
+.dashboard-loading {
+  /* Centra el spinner en el área de contenido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Asegura que ocupe todo el espacio disponible */
+  flex-grow: 1;
+  width: 100%;
+}
+
+
 
 /* --- Ajustes para pantallas altas (opcional) --- */
 @media (min-height: 900px) {

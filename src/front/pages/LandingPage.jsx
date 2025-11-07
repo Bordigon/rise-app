@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.png';
+import RiseLandingPageLogo from '../assets/img/publicpagesimgs/RiseLandingPageLogo.webp';
 import Button from '../components/commons/Button.jsx';
 import "../styles/LandingPage.css";
 import "../styles/PublicNavbar.css"; // Asegúrate de importar el CSS del Navbar
@@ -12,7 +12,7 @@ import PublicNavbar from '../components/PublicNavbar.jsx';
 import featureImageTasks from '../assets/img/publicpagesimgs/featureImageTasks.png'; 
 import featureImageProfile from '../assets/img/publicpagesimgs/featureImageProfile.png'; 
 import featureImageCommunity from '../assets/img/publicpagesimgs/featureImageCommunity.png'; 
-import winkingPhoenix from '../assets/img/publicpagesimgs/winkingPhoenix.png'; 
+import winkingPhoenix from '../assets/img/publicpagesimgs/winkingPhoenix.webp'; 
 
 
 function LandingPage() {

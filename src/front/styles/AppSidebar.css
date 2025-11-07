@@ -77,27 +77,58 @@
 }
 
 .streak-pill{
-  display:flex; align-items:center; gap:8px;
-  color:#fff; font-weight:800;
+  display:flex; 
+  align-items:center; 
+  gap:8px;
+  color:#fff; 
+  font-weight:800;
   background: rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.08);
-  padding:6px 10px; border-radius:999px;
+  padding:6px 12px; /* Más padding */
+  border-radius:999px;
+  width: 100%; /* Ocupa todo el ancho */
+  justify-content: center; /* Centra el contenido */
 }
 .streak-pill img{
-  width:22px; height:22px; filter: drop-shadow(0 0 6px #ff7a00);
+  width: 40px; /* <-- Píxeles fijos */
+  height: 40px; /* <-- Píxeles fijos */
+  filter: drop-shadow(0 0 6px #ff7a00);
 }
 .streak-pill small{
-  margin-left:2px; color:#c8c2d6; font-weight:700; letter-spacing:.02em;
+  margin-left:2px; 
+  color:#c8c2d6; 
+  font-weight:700; 
+  letter-spacing:.02em;
 }
 
-.brasas-btn{
-  background:#ffb100; color:#160d2c;
-  font-weight:800; border:none; border-radius:12px;
-  padding:6px 12px; cursor:pointer;
+.embers-btn{
+  background: #ffb100; /* Fondo amarillo */
+  color: #160d2c; /* Texto oscuro */
+  font-weight: 800; 
+  border: 2px solid #FFD700; /* Borde dorado */
+  border-radius: 12px;
+  padding: 8px 12px; /* Más padding */
+  cursor: pointer;
   transition: transform .15s ease, box-shadow .2s ease;
-  box-shadow: 0 6px 18px rgba(255,177,0,.25);
+  box-shadow: 0 6px 18px rgba(255,177,0,.35), 0 0 15px rgba(255,177,0,.3); /* Sombra + Brillo */
+  
+  /* Flex para alinear el icono y el texto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espacio entre icono y texto */
+  width: 100%; /* Ocupa todo el ancho */
 }
-.brasas-btn:hover{ transform: translateY(-1px); }
+.embers-btn:hover{ 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 22px rgba(255,177,0,.5), 0 0 20px rgba(255,177,0,.5);
+}
+
+.embers-icon {
+  width: 25px; /* <-- ICONO MÁS GRANDE */
+  height: 35px; /* <-- ICONO MÁS GRANDE */
+  
+}
 
 /* ---------- layout helper for main content ---------- */
 .main-with-sidebar{ margin-left: 220px; }
