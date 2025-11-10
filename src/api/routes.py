@@ -424,6 +424,10 @@ def handle_put_streak():
     user = db.session.execute(select(User).where(User.id == user_id)).scalar()
     streak_revision(user)
     user.streak = user.streak + 1
+    hoy = datetime.datetime.now()
+    diff = hoy - user.last_day
+    if diff.days < 1:
+        return jsonify(msg="Todavía no ha pasado un día desde el último streak"), 200
     user.last_day = datetime.datetime.now()
     db.session.commit()
     return jsonify(msg="Ya se añadió un día más a su streak"), 200

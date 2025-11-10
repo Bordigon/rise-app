@@ -142,7 +142,7 @@ export default function FollowersTab() {
       />
 
       <ul className="leaderboard-list">
-        {filtered.length > 0 ? (
+        {filtered > 0 ? (
           filtered.map((user) => {
             const isMe = user.id === currentUser?.id;
             return (
@@ -166,7 +166,7 @@ export default function FollowersTab() {
             );
           })
         ) : (
-          <p className="text-center text-muted">You have no followers matching this search.</p>
+          <p className="text-center mt-2">You have no followers by now</p>
         )}
       </ul>
     </div>

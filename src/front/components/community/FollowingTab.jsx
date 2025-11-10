@@ -213,7 +213,7 @@ export default function FollowingTab() {
             );
           })
         ) : (
-          <p className="text-center text-muted">No users match your search.</p>
+          <p className="text-center mt-2">You dont follow anyone by now</p>
         )}
       </ul>
     </div>

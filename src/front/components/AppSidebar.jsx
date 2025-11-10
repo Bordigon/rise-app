@@ -17,8 +17,8 @@ export default function AppSidebar({ user }) {
   const {
     username = store.user.name,
     levelTotal = level,
-    phoenixEmbers = 0,
-    currentStreak = 0,
+    phoenixEmbers = store.user.embers,
+    currentStreak = store.user.streak,
     avatar = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${store.user.name}`
   } = user || {};
 

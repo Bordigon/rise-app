@@ -50,6 +50,11 @@ export default function storeReducer(state, action) {
         tasks: [],
       };
     }
+    case "REFRESH_USER": {
+      const user = JSON.stringify(action.payload);
+      localStorage.setItem("user-data", user);
+      return { ...state, user: action.payload };
+    }
     case "SET_TASK": {
       return { ...state, tasks: action.payload };
     }
