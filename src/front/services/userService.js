@@ -19,7 +19,7 @@ export const userRegister = async (body) => {
     console.log(response.status);
     const data = await response.json();
     console.log(data);
-    return {data:data,httpcode: 201}
+    return { data: data, httpcode: 201 };
   } catch (err) {
     console.error(`la cagaste ${err}`);
   }
@@ -87,23 +87,3 @@ export const deleteUser = async (id) => {
     console.error(`la cagaste ${err}`);
   }
 };
-
-export async function getFollowing(userId) {
-  // GET /api/users/:id/following -> devuelve [{id,...}] o [ids]
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}/following`, {
-    credentials: "include",
-  });
-  if (!res.ok) throw new Error("Failed to fetch following");
-  return await res.json();
-}
-
-export async function followUser(targetUserId) {
-  // POST /api/follow/:targetId
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/follow/${targetUserId}`, {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" }
-  });
-  if (!res.ok) throw new Error("Failed to follow user");
-  return await res.json();
-}

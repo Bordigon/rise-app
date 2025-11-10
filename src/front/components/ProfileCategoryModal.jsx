@@ -113,26 +113,26 @@ export default function ProfileCategoryModal({ show, onClose, category, allCateg
         }}
       >
         <button className="modal-close-btn" onClick={onClose}>&times;</button>
-        
+
         <div className="modal-category-header">
-          <img src={category.orbImg} alt={`${category.label} Orb`} className="modal-category-orb-img" /> 
+          <img src={category.orbImg} alt={`${category.label} Orb`} className="modal-category-orb-img" />
           <h2 style={{ color: category.color }}>{category.label}</h2>
         </div>
 
         <div className="modal-body-content">
           {showStats ? (
             <div className="modal-stats-view">
+              <div className="category-current-xp">
+                Progress in {category.label}:
+                <span style={{ color: category.color, fontWeight: 'bold' }}>
+                  {profileProgress[category.label.toUpperCase()] || 0} XP
+                </span>
+              </div>
               {highlightedRadarChartData && (
                 <div className="radar-chart-container">
                   <Radar data={highlightedRadarChartData} options={radarChartOptions} />
                 </div>
               )}
-              <div className="category-current-xp">
-                Progress in {category.label}:
-                <span style={{color: category.color, fontWeight: 'bold'}}>
-                  {profileProgress[category.label.toUpperCase()] || 0} XP
-                </span>
-              </div>
             </div>
           ) : (
             <div className="modal-info-view">
@@ -162,7 +162,7 @@ export default function ProfileCategoryModal({ show, onClose, category, allCateg
           >
             Info
           </button>
-          <button 
+          <button
             className="modal-footer-btn add-new-task-btn"
             onClick={handleGoToAddTask}
           >

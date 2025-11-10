@@ -2,17 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 import "../../styles/LeaderboardTab.css";
 import "../../styles/FollowingTab.css";
+import { followingNew, followingsGet } from "../../services/followerService";
+import { getUsers } from "../../services/userService";
 
 /* ======== CUANDO CONECTES BACKEND, DESCOMENTA ======== */
 // import { getUsers, getFollowing, followUser } from "../../services/userService.js";
 
 /* ======== TOGGLE: modo mock/real ======== */
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export default function FollowingTab() {
   const { store } = useGlobalReducer();
   // Fallback por si aún no tienes user en store
-  const currentUser = store.user || { id: 1, username: "PhoenixPlayer" };
+  const currentUser = store.user || { id: 1, name: "PhoenixPlayer" };
 
   const [allUsers, setAllUsers] = useState([]);
   const [followingIds, setFollowingIds] = useState(new Set());
@@ -27,35 +29,35 @@ export default function FollowingTab() {
   /* ===================== MOCK DATA ===================== */
   const loadMock = async () => {
     const MOCK_LEADERBOARD = [
-      { id: 10, username: "PhoenixKing",   level: 15, xp: 15000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
-      { id: 12, username: "HabitQueen",   level: 14, xp: 14200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
-      { id: 2,  username: "RiseUser",     level: 12, xp: 12100, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=RiseUser` },
-      { id: 1,  username: "PhoenixPlayer",level: 5,  xp: 7500,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixPlayer` }, // tú
-      { id: 8,  username: "StreakMaster", level: 4,  xp: 4300,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=StreakMaster` },
-      { id: 5,  username: "GoalSetter",   level: 1,  xp: 1000,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=GoalSetter` },
-      { id: 11, username: "MindfulMona",  level: 3,  xp: 3500,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=MindfulMona` },
-      { id: 13, username: "BodyBuilderBob",level: 7, xp: 8200,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=BodyBuilderBob` },
-      { id: 14, username: "CreativeCat",  level: 9,  xp: 9800,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=CreativeCat` },
-      { id: 15, username: "SocialButterfly",level: 6,xp: 6000,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=SocialButterfly` },
-      { id: 16, username: "ProductivePanda",level: 10,xp: 10500,avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ProductivePanda` },
-      { id: 17, username: "ZenZebra",     level: 2,  xp: 2000,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ZenZebra` },
-      { id: 18, username: "ExplorerElf",  level: 8,  xp: 9000,  avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ExplorerElf` },
-      { id: 19, username: "DreamerDragon",level: 11, xp: 11500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=DreamerDragon` },
-      { id: 20, username: "LearnerLion",  level: 13, xp: 13000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
+      { id: 10, username: "PhoenixKing", level: 15, xp: 15000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixKing` },
+      { id: 12, username: "HabitQueen", level: 14, xp: 14200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=HabitQueen` },
+      { id: 2, username: "RiseUser", level: 12, xp: 12100, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=RiseUser` },
+      { id: 1, username: "PhoenixPlayer", level: 5, xp: 7500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=PhoenixPlayer` }, // tú
+      { id: 8, username: "StreakMaster", level: 4, xp: 4300, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=StreakMaster` },
+      { id: 5, username: "GoalSetter", level: 1, xp: 1000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=GoalSetter` },
+      { id: 11, username: "MindfulMona", level: 3, xp: 3500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=MindfulMona` },
+      { id: 13, username: "BodyBuilderBob", level: 7, xp: 8200, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=BodyBuilderBob` },
+      { id: 14, username: "CreativeCat", level: 9, xp: 9800, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=CreativeCat` },
+      { id: 15, username: "SocialButterfly", level: 6, xp: 6000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=SocialButterfly` },
+      { id: 16, username: "ProductivePanda", level: 10, xp: 10500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ProductivePanda` },
+      { id: 17, username: "ZenZebra", level: 2, xp: 2000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ZenZebra` },
+      { id: 18, username: "ExplorerElf", level: 8, xp: 9000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=ExplorerElf` },
+      { id: 19, username: "DreamerDragon", level: 11, xp: 11500, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=DreamerDragon` },
+      { id: 20, username: "LearnerLion", level: 13, xp: 13000, avatar: `https://api.dicebear.com/7.x/pixel-art/svg?seed=LearnerLion` },
     ];
     const MOCK_FOLLOWING = new Set([10, 12, 2]); // ya sigues a: PhoenixKing, HabitQueen, RiseUser
     setAllUsers(MOCK_LEADERBOARD);
     setFollowingIds(MOCK_FOLLOWING);
   };
 
-  /* ===================== FETCH REAL (COMENTADO) =====================
+  // ===================== FETCH REAL (COMENTADO) =====================
   const loadReal = async () => {
     try {
       setError(null);
       // 1) Traer todos los usuarios
       const users = await getUsers(); // [{id, username, avatar, ...}]
       // 2) Traer a quién sigo yo
-      const following = await getFollowing(currentUser?.id); // p.ej. [{id:10}, {id:12}] o [10,12]
+      const following = await followingsGet(currentUser?.id); // p.ej. [{id:10}, {id:12}] o [10,12]
       const ids = new Set(
         Array.isArray(following) ? following.map(f => (typeof f === "object" ? f.id : f)) : []
       );
@@ -65,7 +67,7 @@ export default function FollowingTab() {
       setError(e?.message || "Failed to load users/following");
     }
   };
-  =================================================================== */
+  //=================================================================== 
 
   // Cargar datos (mock o reales)
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function FollowingTab() {
       if (USE_MOCK) {
         await loadMock();
       } else {
-        /* await loadReal(); */
+        await loadReal();
       }
       // pequeño delay para ver loader
       t = setTimeout(() => setLoading(false), 300);
@@ -90,15 +92,15 @@ export default function FollowingTab() {
     if (!q) {
       return allUsers
         .filter(u => followingIds.has(u.id))
-        .sort((a, b) => (a.username || "").localeCompare(b.username || ""));
+        .sort((a, b) => (a.namee || "").localeCompare(b.name || ""));
     }
-    const matches = allUsers.filter(u => (u.username || "").toLowerCase().includes(q));
+    const matches = allUsers.filter(u => (u.name || "").toLowerCase().includes(q));
     // Primero seguidos, luego no seguidos
     return matches.sort((a, b) => {
       const af = followingIds.has(a.id) ? 0 : 1;
       const bf = followingIds.has(b.id) ? 0 : 1;
       if (af !== bf) return af - bf;
-      return (a.username || "").localeCompare(b.username || "");
+      return (a.name || "").localeCompare(b.name || "");
     });
   }, [allUsers, followingIds, searchTerm]);
 
@@ -109,9 +111,9 @@ export default function FollowingTab() {
       setFollowingIds(prev => new Set(prev).add(userId));
       return;
     }
-    /* ======== REAL (descomenta al conectar) ========
+    // ======== REAL (descomenta al conectar) ========
     try {
-      await followUser(userId);
+      await followingNew(userId);
       setFollowingIds(prev => {
         const next = new Set(prev);
         next.add(userId);
@@ -121,7 +123,7 @@ export default function FollowingTab() {
       console.error(e);
       setError(e?.message || "Failed to follow user");
     }
-    ================================================= */
+    //================================================= */
   };
 
   // Precarga de avatares visibles (evita flicker)
@@ -181,13 +183,13 @@ export default function FollowingTab() {
                 <div className="rank-section" />
                 <div className="user-info-section">
                   <img
-                    src={user.avatar}
+                    src={`https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.name}`}
                     alt="avatar"
                     className="avatar-medium"
                     draggable="false"
                   />
                   <div className="user-details">
-                    <span className="username">{user.username}</span>
+                    <span className="username">{user.name}</span>
                   </div>
                 </div>
 
@@ -201,7 +203,7 @@ export default function FollowingTab() {
                       type="button"
                       className="follow-btn"
                       onClick={() => handleFollow(user.id)}
-                      aria-label={`Follow ${user.username}`}
+                      aria-label={`Follow ${user.name}`}
                     >
                       +
                     </button>
@@ -211,7 +213,7 @@ export default function FollowingTab() {
             );
           })
         ) : (
-          <p className="text-center text-muted">No users match your search.</p>
+          <p className="text-center mt-2">You dont follow anyone by now</p>
         )}
       </ul>
     </div>

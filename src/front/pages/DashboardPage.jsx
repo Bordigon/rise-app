@@ -20,6 +20,7 @@ import DailyTasksModal from "../components/DailyTasksModal.jsx";
 import XpGainIndicator from "../components/XpGainIndicator.jsx";
 import { taskCreate, taskDone, taskList, taskUndone } from "../services/taskService.js";
 import { userProfile } from "../services/userService.js";
+import { emberAdd, streakPlus } from "../services/otherService.js";
 
 const MOCK_MOTIVATIONAL_QUOTE = {
   quote: "The first step doesn't get you where you want to go, but it takes you out of where you are.",
@@ -41,8 +42,8 @@ function DashboardPage() {
     { id: 4, description: "Planificar el día siguiente", done: false },
   ];
 
-  const tasks = store.tasks[0] == null ? defaultTasks :  store.tasks;
-  if(store.tasks[0] != null){
+  const tasks = store.tasks[0] == null ? defaultTasks : store.tasks;
+  if (store.tasks[0] != null) {
     localStorage.setItem("user-tasks", JSON.stringify(tasks));
   }
 
@@ -69,15 +70,21 @@ function DashboardPage() {
         img.onerror = reject;
       });
 
+    const refreshUser = async () => {
+      const data = await userProfile()
+      await dispatch({ type: "REFRESH_USER", payload: { ...data } });
+    }
+
     // Lista de TODAS las imágenes que aparecen en este componente
     const imagesToPreload = [
       closedEggImg,
       openEggImg,
-      
+
     ];
 
     const loadAllAssets = async () => {
       try {
+        await refreshUser();
         await Promise.all(imagesToPreload.map(src => preloadImage(src)));
       } catch (e) {
         console.error("Error preloading images in DashboardPage:", e);
@@ -128,7 +135,7 @@ function DashboardPage() {
 
     const isCurrentlyComplete = completedDays.has(todayKey);
 
-    if (store.tasks[0]!=null) {
+    if (store.tasks[0] != null) {
       dispatch({ type: "TASK_DONE", payload: { taskId } });
       taskDone(taskId);
       const data = await userProfile();
@@ -137,8 +144,9 @@ function DashboardPage() {
 
     if (willBeDayComplete && !isCurrentlyComplete) {
       dispatch({ type: "MARK_DAY_COMPLETE", payload: { dayKey: todayKey } });
-
+      streakPlus();
       const xpGainedToday = 50;
+      emberAdd(50);
       completionAudioRef.current.play().catch(e => console.error("Error playing sound:", e));
       setShowCompletionEffect(true);
       setTimeout(() => setShowCompletionEffect(false), 3000);
@@ -148,9 +156,16 @@ function DashboardPage() {
       setTimeout(() => setPulseExpBar(false), 600);
       setCelebrateTrigger(x => x + 1);
       setShowDailyTasksModal(false);
+      const thisUser = await userProfile()
+      await dispatch({
+        type: "REFRESH_USER",
+        payload: thisUser
+      });
     } else if (!willBeDayComplete && isCurrentlyComplete) {
       dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
     }
+    setPulseExpBar(true);
+    setTimeout(() => setPulseExpBar(false), 600);
   };
 
   const handleDayClick = (dayData) => {
@@ -183,7 +198,7 @@ function DashboardPage() {
 
       <div className="dashboard-message">
         <p className="lead">
-          You've been working on your health for <span className="text-rise-orange fw-bold">{userData.currentStreak} days</span>!
+          You've been working on your health for <span className="text-rise-orange fw-bold">{userData.streak} days</span>!
         </p>
         {!isDayCompleteNow && (
           <p className="text-muted">
