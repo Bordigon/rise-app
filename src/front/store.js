@@ -1,38 +1,94 @@
-export const initialStore=()=>{
-  return{
-    message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
-    ]
+export const initialStore = () => {
+  try {
+    const token = localStorage.getItem("jwt-token");
+    const refreshToken = localStorage.getItem("jwt-refresh-token");
+    const userData = localStorage.getItem("user-data");
+    const listaTask = localStorage.getItem("user-tasks");
+    const authData = {
+      user: userData ? JSON.parse(userData) : null,
+      token: token,
+      refreshToken: refreshToken,
+      tasks: listaTask ? JSON.parse(listaTask) : [],
+    };
+    return { ...authData };
+  } catch (error) {
+    console.error("Error loading data from localStorage:", error);
+    localStorage.removeItem("jwt-token");
+    localStorage.removeItem("jwt-refresh-token");
+    localStorage.removeItem("user-data");
+    return { user: null, token: null, refreshToken: null };
   }
-}
+};
 
-export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case 'set_hello':
-      return {
-        ...store,
-        message: action.payload
-      };
-      
-    case 'add_task':
+export default function storeReducer(state, action) {
+  switch (action.type) {
+    case "LOGIN_SUCCESS": {
+      const { user, token, refresh_token, tasks } = action.payload;
 
-      const { id,  color } = action.payload
+      localStorage.setItem("jwt-token", token);
+      localStorage.setItem("jwt-refresh-token", refresh_token);
+      localStorage.setItem("user-data", user);
+      localStorage.setItem("user-tasks", JSON.stringify(tasks));
 
       return {
-        ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
+        ...state,
+        user,
+        token,
+        refresh_token,
+        tasks,
       };
+    }
+    case "LOGOUT": {
+      localStorage.removeItem("jwt-token");
+      localStorage.removeItem("jwt-refresh-token");
+      localStorage.removeItem("user-data");
+      localStorage.removeItem("user-tasks");
+      return {
+        user: null,
+        token: null,
+        refresh_token: null,
+        tasks: [],
+      };
+    }
+    case "REFRESH_USER": {
+      const user = JSON.stringify(action.payload);
+      localStorage.setItem("user-data", user);
+      return { ...state, user: action.payload };
+    }
+    case "SET_TASK": {
+      return { ...state, tasks: action.payload };
+    }
+    case "ADD_TASK": {
+      // ------ al añadir la tarea acá es necesario primero añadirla al server
+      return {
+        ...state,
+        tasks: [...state.tasks, action.payload],
+      };
+    }
+    case "TASK_DONE": {
+      const updatedTasks = state.tasks.map((task) =>
+        task.id === action.payload.taskId ? { ...task, done: true } : task
+      );
+      localStorage.setItem("user-tasks", JSON.stringify(updatedTasks));
+      return { ...state, tasks: updatedTasks };
+    }
+    case "DELETE_TASK": {
+      const updatedTasks = state.tasks.filter(
+        (task) => task.id != action.payload.id
+      );
+      return { ...state, tasks: updatedTasks };
+    }
+    case "MARK_DAY_COMPLETE": {
+      const newCompletedDays = new Set(state.completedDays);
+      newCompletedDays.add(action.payload.dayKey);
+      return { ...state, completedDays: newCompletedDays };
+    }
+    case "MARK_DAY_INCOMPLETE": {
+      const newCompletedDays = new Set(state.completedDays);
+      newCompletedDays.delete(action.payload.dayKey);
+      return { ...state, completedDays: newCompletedDays };
+    }
     default:
-      throw Error('Unknown action.');
-  }    
+      return state;
+  }
 }

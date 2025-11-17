@@ -1,0 +1,140 @@
+/* --- 1. Importaciones Globales --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@300;400;600&display=swap');
+/* Import Bootstrap Icons CSS if installed via npm */
+@import 'bootstrap-icons/font/bootstrap-icons.css'; 
+/* --- 2. Variables Globales de Diseño (Tokens) --- */
+:root {
+  /* Paleta de Colores Principal */
+  --orange: #FF6A00;
+  --orange-2: #FF8A2A;
+  --purple-900: #160d2c;
+  --rise-orange-primary: #FF6700;
+  --rise-orange-hover: #E65C00;
+  --rise-dark-purple: #1a0b1f; /* Used for dark backgrounds like Login */
+  --rise-light-purple: #1d143e; /* Used for borders/accents on dark */
+  --rise-text-light: #f1f1f1;
+  --rise-gray-text: #a9a2b8; /* Secondary text on dark */
+  --rise-light-bg: #f8f9fa; /* Light background for Landing */
+  --rise-dark-text: #2C2F33; /* Dark text for light background */
+  --rise-secondary-text-light: #6c757d; /* Muted text on light background */
+
+  /* Layout Sizing (will be used later) */
+  --sidebar-w: 220px;
+  --sidebar-w-collapsed: 78px;
+  --expbar-h: 56px;
+  --content-max-w: 1040px;
+}
+
+/* --- 3. Estilos Base Globales --- */
+body {
+  /* This sets the DEFAULT background, might be overridden */
+  background-color: var(--rise-light-bg); /* Default light for landing */
+  color: var(--rise-dark-text);
+  font-family: 'Open Sans', sans-serif;
+  min-height: 100vh;
+}
+
+.app-layout {
+  display: flex;
+}
+
+.main-full-width {
+  flex-grow: 1;
+  min-height: 100vh; /* Ensure it takes full height */
+  /* Landing page might override background, ensure this doesn't conflict */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Optional: Ensure root element takes full height */
+#root, .layout-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+ flex-grow: 1; /* Allows main content to fill available space */
+ display: flex;
+ flex-direction: column;
+}
+
+.main-with-sidebar {
+  flex-grow: 1;
+  margin-left: var(--sidebar-w); /* Space for sidebar */
+  padding: 2rem; /* Add padding */
+  padding-bottom: calc(var(--expbar-h) + 2rem); /* Space for ExpBar */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure it takes full height */
+  /* APPLY DARK BACKGROUND HERE */
+  background-color: var(--rise-dark-purple);
+  background-image:
+    radial-gradient(circle at 50% 10%, rgba(50, 10, 80, 0.3) 0%, transparent 70%),
+    linear-gradient(180deg, #1a0b1f 0%, #0d0714 100%);
+  background-repeat: no-repeat;
+  color: var(--rise-text-light); /* Ensure text is light */
+}
+
+/* --- 4. Componentes Globales Reutilizables (.rise-btn) --- */
+.rise-btn {
+  appearance: none;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  border-radius: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+  color: #fff;
+  background: var(--orange);
+  box-shadow: 0 10px 24px rgba(255, 106, 0, .35);
+  display: inline-flex; /* Helps align content inside */
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; /* Remove underline if used as link */
+  white-space: nowrap;
+}
+.rise-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* Variations */
+.rise-btn--primary {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-2) 100%);
+}
+.rise-btn--secondary-outline { /* Style for outlined button on light background */
+  background-color: transparent !important;
+  border: 2px solid var(--orange) !important;
+  color: var(--orange) !important;
+}
+.rise-btn--secondary-outline:hover {
+  background-color: var(--orange) !important;
+  color: white !important;
+}
+
+/* Sizes */
+.rise-btn--md { padding: .9rem 1.4rem; font-size: 1rem; }
+.rise-btn--lg { padding: 1rem 2rem; font-size: 1.05rem; }
+
+/* Block */
+.rise-btn--block { width: 100%; max-width: 360px; }
+
+/* Interaction */
+.rise-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(255, 106, 0, 0.45); /* Slightly stronger shadow on hover */
+}
+.rise-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 8px 18px rgba(255, 106, 0, .30); /* Slightly less shadow when pressed */
+}
+
+@media (max-width: 880px) {
+  .main-with-sidebar {
+    margin-left: var(--sidebar-w-collapsed);
+  }
+}

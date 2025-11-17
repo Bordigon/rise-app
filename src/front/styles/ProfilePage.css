@@ -1,0 +1,174 @@
+
+.profile-wrapper {
+  position: relative;
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+.profile-wrapper-loading {
+  /* Centra el spinner en el área de contenido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Asegura que ocupe todo el espacio disponible */
+  flex-grow: 1;
+  width: 100%;
+}
+
+.profile-background {
+  position: absolute;
+  inset: 0;
+  bottom: 0;
+  z-index: 0;
+  background-image: url("../assets/img/profilepageimgs/profile-bg-16x9.webp"); 
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* 2. Escenario (El ancla para todo) */
+.profile-stage {
+  position: relative; /* Todo se posiciona en relación a esto */
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- 3. Fénix (Posicionado Absolutamente) --- */
+.fen {
+  position: absolute;
+  /* --- ¡MUEVE AL FÉNIX AQUÍ! --- */
+  left: 50%; /* Centrado horizontal */
+  top: 30%;  /* Más abajo (ej: 30% desde arriba) */
+  transform: translateX(-50%);
+
+  /* --- TAMAÑO RESPONSIVO --- */
+  width: 25vmin; /* Más grande (22% del lado más corto de la pantalla) */
+  min-width: 140px;
+  max-width: 250px;
+
+  height: auto;
+  user-select: none;
+  filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
+  transition: transform 0.2s ease;
+}
+
+/* --- 4. Contenedor de Huevos (¡ELIMINADO!) --- */
+/* Ya no usamos .egg-pyramid. Posicionamos cada huevo individualmente. */
+.egg-pyramid {
+  /* Este contenedor <ul> sigue existiendo en tu JSX, */
+  /* así que lo usamos como un contenedor base sin grid. */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* --- 5. CADA HUEVO (Posicionado Absolutamente e Independiente) --- */
+.egg-slot {
+  position: absolute; /* ¡Cada <li> es posicionado absolutamente! */
+  list-style: none;
+  /* --- AJUSTA LA POSICIÓN DE CADA HUEVO AQUÍ --- */
+}
+
+/* (Creativity - Púrpura) */
+.egg-0 {
+  top: 55%;
+  left: 40%;
+  transform: translate(-50%, -50%) rotate(-05deg); /* Rotación ligera */
+}
+
+/* (Mind - Azul) */
+.egg-1 {
+  top: 55%;
+  left: 60%;
+  transform: translate(-50%, -50%) rotate(05deg);
+}
+
+/* (Body - Verde) */
+.egg-2 {
+  top: 75%;
+  left: 37%;
+  transform: translate(-50%, -50%) rotate(-05deg);
+}
+
+/* (Social - Amarillo) */
+.egg-3 {
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Huevo central sin rotación */
+}
+
+/* (Productivity - Rojo) */
+.egg-4 {
+  top: 75%;
+  left: 63%;
+  transform: translate(-50%, -50%) rotate(05deg);
+}
+
+/* --- 6. Huevo Individual (Botón e Imagen) --- */
+.egg {
+  position: relative;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  transition: transform .18s ease, filter .18s ease;
+}
+
+.egg img {
+  /* --- TAMAÑO RESPONSIVO --- */
+  width: 15vmin; /* Huevos más grandes */
+  min-width: 80px;
+  max-width: 150px;
+  
+  height: auto;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .4));
+  display: block;
+}
+
+/* Efecto hover ahora en el <li> (.egg-slot) */
+.egg-slot:hover .egg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, .5));
+}
+
+/* --- 7. Etiqueta del Huevo (Responsive) --- */
+.egg-label {
+  position: absolute;
+  top: 95%; /* Ligeramente solapado con el huevo */
+  left: 50%;
+  transform: translate(-50%, 6px);
+  
+  font-size: 1.8vmin; /* Escala con la ventana */
+  min-font-size: 10px;
+  max-font-size: 18px;
+
+  color: #F7E5C8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+  white-space: nowrap;
+  pointer-events: none; /* Evita que la etiqueta bloquee el clic en el huevo */
+}
+
+
+@media (max-width: 880px) {
+  .profile-background {
+    left: var(--sidebar-w-collapsed);
+  }
+}
+
+/* Asegura que el contenido quede por encima */
+.profile-stage {
+  position: relative;
+  z-index: 1;
+}

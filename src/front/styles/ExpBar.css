@@ -1,0 +1,86 @@
+
+.expbar-wrap {
+  position: fixed;
+  /* Starts where the sidebar ends */
+  left: var(--sidebar-w);
+  right: 0; /* Stretches to the right edge */
+  bottom: 0; /* Sits at the very bottom */
+  z-index: 99;
+  /* These styles define the bar itself */
+  padding: 8px 24px;
+  background: rgba(18, 12, 28, 0.85);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255, 122, 0, 0.18);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* The inner card now just structures the content */
+.expbar-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%; /* Take full width of the wrap */
+}
+
+.expbar-left .exp-level {
+  font-weight: 800;
+  color: #ffb36b;
+  text-shadow: 0 0 6px rgba(255, 122, 0, 0.6);
+}
+
+.expbar-track {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2a203e, #1b1330);
+  overflow: hidden;
+  border: 1px solid rgba(255, 122, 0, 0.25);
+}
+
+.expbar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff7a00, #ffa33a, #ff7a00);
+  background-size: 200% 100%;
+  animation: lavaFlow 2.2s linear infinite;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.25);
+  transition: width 0.5s ease-in-out; /* Add transition for smooth updates */
+}
+
+.expbar-glow {
+  position: absolute;
+  inset: -6px -10px;
+  pointer-events: none;
+  border-radius: 999px;
+  box-shadow: 0 0 14px rgba(255, 122, 0, 0.55), 0 0 28px rgba(128, 0, 255, 0.22);
+}
+
+.expbar-right .exp-numbers {
+  color: #d7d4e3;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+@keyframes lavaFlow {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Responsive adjustment for when the sidebar collapses */
+@media (max-width: 880px) {
+  .expbar-wrap {
+    left: var(--sidebar-w-collapsed); /* Adjusts to the collapsed sidebar width */
+  }
+}
+
+/* --- Animación de Pulso --- */
+.expbar-wrap.pulse-effect .expbar-card {
+    animation: expPulse 0.6s ease-out;
+}
+
+@keyframes expPulse {
+    0% { transform: scale(1); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 122, 0, 0.55); }
+    50% { transform: scale(1.03); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 122, 0, 0.8); }
+    100% { transform: scale(1); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 122, 0, 0.55); }
+}

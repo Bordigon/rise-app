@@ -1,0 +1,282 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import "../styles/DashboardPage.css";
+
+import {
+  startOfWeek,
+  addDays,
+  localKey,
+  fmtDay,
+  dayLetter,
+} from "../utils/dateUtils.js";
+
+import closedEggImg from "../assets/img/dashboardpageimgs/closed-egg.webp";
+import openEggImg from "../assets/img/dashboardpageimgs/open-egg.webp";
+import completionSound from "../assets/audio/completionSound.mp3";
+
+import PhoenixStreakFM from "../components/PhoenixStreakFM.jsx";
+import DailyTasksModal from "../components/DailyTasksModal.jsx";
+import XpGainIndicator from "../components/XpGainIndicator.jsx";
+import { taskCreate, taskDone, taskList, taskUndone } from "../services/taskService.js";
+import { userProfile } from "../services/userService.js";
+import { emberAdd, streakPlus } from "../services/otherService.js";
+
+const MOCK_MOTIVATIONAL_QUOTE = {
+  quote: "The first step doesn't get you where you want to go, but it takes you out of where you are.",
+  author: "J. P. Morgan",
+};
+
+function DashboardPage() {
+  const navigate = useNavigate();
+  const { store, dispatch } = useGlobalReducer();
+  const [usingDefaultTasks, setUsingDefaultTasks] = useState(0);
+
+  // --- NUEVO: estado de carga global para bloquear cualquier imagen ---
+  const [isLoading, setIsLoading] = useState(true);
+
+  const defaultTasks = [
+    { id: 1, description: "Beber 2 litros de agua", done: false },
+    { id: 2, description: "Hacer 30 min de ejercicio", done: false },
+    { id: 3, description: "Leer 15 páginas", done: false },
+    { id: 4, description: "Planificar el día siguiente", done: false },
+  ];
+
+  const tasks = store.tasks[0] == null ? defaultTasks : store.tasks;
+  if (store.tasks[0] != null) {
+    localStorage.setItem("user-tasks", JSON.stringify(tasks));
+  }
+
+  const userData = store.user || { username: "User", level: 1, xp: 0, phoenixEmbers: 0, currentStreak: 0 };
+  const completedDays = store.completedDays || new Set();
+
+  const [motivationalQuote] = useState(MOCK_MOTIVATIONAL_QUOTE);
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), 1));
+  const [showDailyTasksModal, setShowDailyTasksModal] = useState(false);
+  const [showCompletionEffect, setShowCompletionEffect] = useState(false);
+  const [xpGainAnimation, setXpGainAnimation] = useState({ amount: 0, show: false });
+  const [pulseExpBar, setPulseExpBar] = useState(false);
+  const completionAudioRef = useRef(new Audio(completionSound));
+  const [celebrateTrigger, setCelebrateTrigger] = useState(0);
+  const [loadingTasks, setLoadingTasks] = useState(true);
+
+  // --- NUEVO: preloader de imágenes  ---
+  useEffect(() => {
+    const preloadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+
+    const refreshUser = async () => {
+      const data = await userProfile()
+      await dispatch({ type: "REFRESH_USER", payload: { ...data } });
+    }
+
+    // Lista de TODAS las imágenes que aparecen en este componente
+    const imagesToPreload = [
+      closedEggImg,
+      openEggImg,
+
+    ];
+
+    const loadAllAssets = async () => {
+      try {
+        await refreshUser();
+        await Promise.all(imagesToPreload.map(src => preloadImage(src)));
+      } catch (e) {
+        console.error("Error preloading images in DashboardPage:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAllAssets();
+  }, []);
+
+  const weekProgress = useMemo(() => {
+    const todayKey = localKey(new Date());
+    return [...Array(7)].map((_, i) => {
+      const date = addDays(weekStart, i);
+      const key = localKey(date);
+      return {
+        date, key, day: dayLetter(date), label: fmtDay(date),
+        isToday: key === todayKey,
+        complete: completedDays.has(key),
+        height: [0, 14, 24, 16, 8, 12, 20][i],
+      };
+    });
+  }, [weekStart, completedDays]);
+
+  const currentDay = weekProgress.find((d) => d.isToday);
+  const isPhoenixHappy = !!currentDay?.complete;
+  const pendingTasks = tasks.filter(task => !task.done).length;
+  const isDayCompleteNow = pendingTasks === 0 && tasks.length > 0;
+
+  const handleAddTask = async (list) => {
+    const data = await taskCreate(list['description'], null, null, list['habit']);
+    await dispatch({ type: "ADD_TASK", payload: { ...data } });
+    setUsingDefaultTasks(0);
+  };
+
+  const handleToggleTask = async (taskId) => {
+    const targetTask = tasks.find(t => t.id === taskId);
+    if (!targetTask) return;
+
+    const futureTasks = tasks.map(t =>
+      t.id === taskId ? { ...t, done: !t.done } : t
+    );
+    const willBeDayComplete = futureTasks.every(t => t.done) && futureTasks.length > 0;
+    const todayKey = currentDay?.key;
+
+    if (!todayKey) return;
+
+    const isCurrentlyComplete = completedDays.has(todayKey);
+
+    if (store.tasks[0] != null) {
+      dispatch({ type: "TASK_DONE", payload: { taskId } });
+      taskDone(taskId);
+      const data = await userProfile();
+      localStorage.setItem("user-data", JSON.stringify(data));
+    }
+
+    if (willBeDayComplete && !isCurrentlyComplete) {
+      dispatch({ type: "MARK_DAY_COMPLETE", payload: { dayKey: todayKey } });
+      streakPlus();
+      const xpGainedToday = 50;
+      emberAdd(50);
+      completionAudioRef.current.play().catch(e => console.error("Error playing sound:", e));
+      setShowCompletionEffect(true);
+      setTimeout(() => setShowCompletionEffect(false), 3000);
+      setXpGainAnimation({ amount: xpGainedToday, show: true });
+      setTimeout(() => setXpGainAnimation({ amount: 0, show: false }), 3000);
+      setPulseExpBar(true);
+      setTimeout(() => setPulseExpBar(false), 600);
+      setCelebrateTrigger(x => x + 1);
+      setShowDailyTasksModal(false);
+      const thisUser = await userProfile()
+      await dispatch({
+        type: "REFRESH_USER",
+        payload: thisUser
+      });
+    } else if (!willBeDayComplete && isCurrentlyComplete) {
+      dispatch({ type: "MARK_DAY_INCOMPLETE", payload: { dayKey: todayKey } });
+    }
+    setPulseExpBar(true);
+    setTimeout(() => setPulseExpBar(false), 600);
+  };
+
+  const handleDayClick = (dayData) => {
+    setShowDailyTasksModal(true);
+  };
+  const handleDailyTasksButtonClick = () => {
+    setShowDailyTasksModal(true);
+  };
+
+  const goPrevWeek = () => setWeekStart((ws) => addDays(ws, -7));
+  const goNextWeek = () => setWeekStart((ws) => addDays(ws, 7));
+
+  // --- NUEVO: mientras isLoading, no renderizamos NINGUNA imagen ni PhoenixStreakFM ---
+  if (isLoading) {
+    return (
+      <div className="dashboard-loading">
+        <div className="spinner-border text-light" role="status" aria-label="Loading">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="stage">
+      {/* Phoenix y resto solo aparecen cuando isLoading === false */}
+      <div className="phoenix-central-container d-flex justify-content-center">
+        <PhoenixStreakFM completed={isPhoenixHappy} trigger={celebrateTrigger} />
+      </div>
+
+      <div className="dashboard-message">
+        <p className="lead">
+          You've been working on your health for <span className="text-rise-orange fw-bold">{userData.streak} days</span>!
+        </p>
+        {!isDayCompleteNow && (
+          <p className="text-muted">
+            You have <span className="fw-bold">{pendingTasks} tasks</span> left for today. Keep the streak going!
+          </p>
+        )}
+        {isDayCompleteNow && (
+          <span className="text-success mt-2 d-block">✨ Day Completed! ✨</span>
+        )}
+      </div>
+
+      <div className="week-strip-grid">
+        <button type="button" className="week-arrow" onClick={goPrevWeek} aria-label="Previous Week">
+          &lt;
+        </button>
+
+        <div className="week-days-wrapper">
+          {weekProgress.map((day) => (
+            <div
+              key={day.key}
+              className="day-item"
+              onClick={() => handleDayClick(day)}
+              style={{ marginBottom: `${day.height}px` }}
+            >
+              <span className={`day-letter fw-bold ${day.isToday ? "text-rise-orange" : ""}`}>
+                {day.day}
+              </span>
+
+              {/* Estas imágenes solo existen cuando ya se precargaron */}
+              <img
+                src={day.complete ? openEggImg : closedEggImg}
+                alt={day.complete ? "Cracked Egg" : "Closed Egg"}
+                className={`day-egg-image ${day.complete ? "open" : "closed"}`}
+                draggable="false"
+              />
+
+              <span className="day-date small text-muted mt-2">{day.label}</span>
+              {day.isToday && <span className="today-indicator">TODAY</span>}
+            </div>
+          ))}
+        </div>
+
+        <button type="button" className="week-arrow" onClick={goNextWeek} aria-label="Next Week">
+          &gt;
+        </button>
+      </div>
+
+      <div className="cta-wrap">
+        <button className="rise-btn rise-btn--lg daily-tasks-button" onClick={handleDailyTasksButtonClick}>
+          Daily Tasks
+        </button>
+      </div>
+
+      <div className="motivational-quote-wrapper">
+        <p className="quote-text">"{motivationalQuote.quote}"</p>
+        <p className="quote-author">- {motivationalQuote.author}</p>
+      </div>
+
+      {showCompletionEffect && (
+        <div className="completion-animation-overlay">
+          <h1 className="text-center text-success completion-message">
+            DAY COMPLETE! ✨
+          </h1>
+        </div>
+      )}
+
+      {xpGainAnimation.show && <XpGainIndicator amount={xpGainAnimation.amount} />}
+
+      <DailyTasksModal
+        show={showDailyTasksModal}
+        onClose={() => setShowDailyTasksModal(false)}
+        tasks={tasks}
+        onToggleTask={handleToggleTask}
+        onAddTask={handleAddTask}
+        currentDay={currentDay}
+      />
+    </div>
+  );
+}
+
+export default DashboardPage;

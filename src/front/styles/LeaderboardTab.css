@@ -1,0 +1,147 @@
+/* src/front/styles/LeaderboardTab.css */
+
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  background-color: var(--rise-light-purple, #1d143e);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  min-height: 70px; /* Asegura un buen espacio para cada fila */
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.leaderboard-row.current-user-highlight {
+  background-color: var(--orange, #FF6A00);
+  border-color: var(--orange, #FF6A00);
+  box-shadow: 0 0 15px rgba(255, 106, 0, 0.5);
+  transform: scale(1.02);
+  z-index: 10;
+  position: relative; /* Para que el box-shadow se vea bien */
+}
+.leaderboard-row.current-user-highlight .rank-number,
+.leaderboard-row.current-user-highlight .username,
+.leaderboard-row.current-user-highlight .level,
+.leaderboard-row.current-user-highlight .xp-total {
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+
+/* SECCIÓN DE RANK */
+.rank-section {
+  width: 45px; /* Espacio fijo para rank/medalla */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; /* No se encoge */
+}
+
+.rank-number {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--rise-gray-text, #a9a2b8);
+}
+
+.rank-medal {
+  width: 45px; /* Tamaño de la medalla de huevo */
+  height: auto;
+  object-fit: contain;
+}
+
+/* Colores especiales para los 3 primeros */
+.rank-gold .rank-number, .rank-gold .username { color: gold; }
+.rank-silver .rank-number, .rank-silver .username { color: silver; }
+.rank-bronze .rank-number, .rank-bronze .username { color: #cd7f32; /* Brownish */ }
+
+
+/* SECCIÓN DE INFO DEL USUARIO (avatar + detalles) */
+.user-info-section {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Ocupa el espacio restante */
+  margin-left: 1rem;
+}
+
+.avatar-medium {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  background-color: #333;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.username {
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.1rem;
+  white-space: nowrap; /* Evita que el nombre de usuario se rompa */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.level {
+  font-weight: 500;
+  color: var(--rise-gray-text, #a9a2b8);
+  font-size: 0.85rem;
+}
+
+/* XP Total */
+.xp-total {
+  font-weight: 800;
+  color: var(--orange-2, #FF8A2A);
+  font-size: 1.1rem;
+  margin-left: 1rem;
+  flex-shrink: 0; /* No se encoge */
+}
+
+.separator {
+  text-align: center;
+  color: var(--rise-gray-text);
+  font-style: italic;
+  font-size: 1.2rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem 0;
+  border: none;
+  cursor: default;
+  transform: none;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.separator:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.leaderboard-loading {
+  /* Centra el spinner en el área de contenido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Asegura que ocupe todo el espacio disponible */
+  flex-grow: 1;
+  width: 100%;
+}
