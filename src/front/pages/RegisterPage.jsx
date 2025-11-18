@@ -31,7 +31,7 @@ function RegisterPage() {
                 name: username
             }
             const response = await userRegister(body)
-            if (response['httpcode']==201)
+            if (response['httpcode'] == 201)
                 navigate("/login");
             else {
                 console.error("Login failed:", response); // Log the actual error
@@ -127,7 +127,7 @@ function RegisterPage() {
                 </div>
             </div>
 
-            {/* Footer section (using CSS for positioning) */}
+            {/* Footer section (using CSS for positioning) 
             <div className="auth-footer">
                 <div className="auth-footer-item-list">
                     <div className="footer-item">🧠 Mind</div>
@@ -136,7 +136,7 @@ function RegisterPage() {
                     <div className="footer-item">❤️ Social</div>
                     <div className="footer-item">🎨 Creativity</div>
                 </div>
-            </div>
+            </div>*/}
         </div>
     );
 }
