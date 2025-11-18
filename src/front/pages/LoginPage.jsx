@@ -106,7 +106,7 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Footer section (using CSS for positioning) */}
+      {/* Footer section (using CSS for positioning) 
       <div className="auth-footer">
         <div className="auth-footer-item-list">
           <div className="auth-footer-item">🧠 Mind</div>
@@ -115,7 +115,7 @@ function LoginPage() {
           <div className="auth-footer-item">❤️ Social</div>
           <div className="auth-footer-item">🎨 Creativity</div>
         </div>
-      </div>
+      </div>*/}
     </div>
   );
 }
