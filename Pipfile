@@ -22,6 +22,8 @@ bcrypt = "*"
 openai = "*"
 flask = "*"
 flask-cors = "*"
+supabase = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.13"

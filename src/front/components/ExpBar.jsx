@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import "../styles/ExpBar.css";
 
-export default function ExpBar({ level = 1, currentExp = 0, nextLevelExp = 1000 }) {
+export default function ExpBar({ level, currentExp, nextLevelExp }) {
   const pct = useMemo(
     () => Math.max(0, Math.min(100, (currentExp / nextLevelExp) * 100)),
     [currentExp, nextLevelExp]
-  ); 
+  );
 
   return (
     <div className="expbar-wrap">

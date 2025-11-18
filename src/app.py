@@ -13,6 +13,10 @@ from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from flask_cors import CORS
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # from models import Person
 

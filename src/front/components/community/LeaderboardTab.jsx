@@ -6,6 +6,7 @@ import { getUsers } from '../../services/userService.js';
 import goldenEgg from '../../assets/img/communitypageimgs/golden-egg.webp';
 import silverEgg from '../../assets/img/communitypageimgs/silver-egg.webp';
 import bronzeEgg from '../../assets/img/communitypageimgs/bronze-egg.webp';
+import { calculateLevelData } from '../../utils/levelUtils.js';
 
 export default function LeaderboardTab() {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -109,6 +110,13 @@ export default function LeaderboardTab() {
     })();
   }, [filteredLeaderboard, fetchLoading]);
 
+  const handleLevel = (user) => {
+    const { level, currentLevelExp, expToNextLevel } = calculateLevelData(user.level);
+
+    return level;
+  }
+
+
   if (fetchLoading || assetsLoading) {
     return (
       <div className="leaderboard-loading">
@@ -155,7 +163,7 @@ export default function LeaderboardTab() {
                   <img src={avatarSrc} alt="avatar" className="avatar-medium" draggable="false" />
                   <div className="user-details">
                     <span className="username">{user.name}</span>
-                    {/* <span className="level">Level {user.level}</span> */}
+                    <span className="level">Level {handleLevel(user)}</span>
                   </div>
                 </div>
                 <span className="xp-total">{user.level} XP</span>
