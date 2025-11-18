@@ -63,7 +63,8 @@ Thumbs.db
 node_modules/
 
 # webpack output
-dist/*
+!dist/*
+!dist/
 !public/
 !public/*
 
