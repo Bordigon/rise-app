@@ -5,7 +5,7 @@ import re
 def deepseek_response(request):
     client = OpenAI(
         base_url="https://api.deepseek.com",
-        api_key="sk-feebc043444b41dab953186dfd5b516c"
+        api_key=os.getenv('API_KEY')
     )
 
     completion = client.chat.completions.create(
