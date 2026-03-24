@@ -1,12 +1,17 @@
+import os
+from dotenv import load_dotenv
 from openai import OpenAI
+from pathlib import Path
 import json
 import re
 
+root_dir = Path(__file__).parent.parent.parent
+env_path = root_dir / '.env'
+load_dotenv(dotenv_path=env_path)
+
 def deepseek_response(request):
-    client = OpenAI(
-        base_url="https://api.deepseek.com",
-        api_key=os.getenv('API_KEY')
-    )
+    client = OpenAI(api_key=os.environ.get('API_KEY'), base_url="https://api.deepseek.com")
+
 
     completion = client.chat.completions.create(
         model="deepseek-chat",
