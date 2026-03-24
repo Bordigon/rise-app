@@ -12,6 +12,7 @@ load_dotenv(dotenv_path=env_path)
 def deepseek_response(request):
     client = OpenAI(api_key=os.environ.get('API_KEY'), base_url="https://api.deepseek.com")
 
+
     completion = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
